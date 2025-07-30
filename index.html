@@ -256,7 +256,7 @@
                 // Login bem-sucedido - redirecionar para Home.html
                 // Você pode armazenar dados do professor em memoria se necessário
                 sessionStorage.setItem('professorData', JSON.stringify(result.user));
-                window.location.href = 'Home.html';
+                window.location.href = 'home.html';
             } else {
                 showError(result.message);
             }
