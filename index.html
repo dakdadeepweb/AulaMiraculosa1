@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #808080;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+        }
+
+        .logo {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            margin-top: 10px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .loading {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .spinner {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">LOGO</div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" name="nome" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="digito">Dígito:</label>
+                <input type="text" id="digito" name="digito" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="senha">Senha:</label>
+                <input type="password" id="senha" name="senha" required>
+            </div>
+            
+            <button type="submit" class="login-btn" id="loginBtn">Entrar</button>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                Verificando credenciais...
+            </div>
+            
+            <div class="error-message" id="errorMessage"></div>
+        </form>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.min.js"></script>
+
+    <script>
+        // Configuração do Firebase - SUBSTITUA PELOS SEUS DADOS
+        const firebaseConfig = {
+  apiKey: "AIzaSyCL2e1Zi-pzXQZ-02vQf6I8rYjbi5IzaRo",
+  authDomain: "aula-miraculosa.firebaseapp.com",
+  databaseURL: "https://aula-miraculosa-default-rtdb.firebaseio.com",
+  projectId: "aula-miraculosa",
+  storageBucket: "aula-miraculosa.firebasestorage.app",
+  messagingSenderId: "1067250456026",
+  appId: "1:1067250456026:web:632e43e793155444035ce3",
+        };
+
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Elementos do DOM
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const loading = document.getElementById('loading');
+        const errorMessage = document.getElementById('errorMessage');
+        const nomeInput = document.getElementById('nome');
+        const digitoInput = document.getElementById('digito');
+        const senhaInput = document.getElementById('senha');
+
+        // Função para mostrar erro
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+        }
+
+        // Função para limpar erro
+        function clearError() {
+            errorMessage.style.display = 'none';
+        }
+
+        // Função para mostrar loading
+        function showLoading() {
+            loginBtn.disabled = true;
+            loading.style.display = 'block';
+            clearError();
+        }
+
+        // Função para esconder loading
+        function hideLoading() {
+            loginBtn.disabled = false;
+            loading.style.display = 'none';
+        }
+
+        // Função para verificar credenciais no Firebase
+        async function verificarCredenciais(nome, digito, senha) {
+            try {
+                // Buscar professor no Firebase Realtime Database
+                // Estrutura esperada: /professores/{nome}/
+                const professorRef = database.ref(`professores/${nome}`);
+                const snapshot = await professorRef.once('value');
+                
+                if (snapshot.exists()) {
+                    const professorData = snapshot.val();
+                    
+                    // Verificar se o dígito e senha conferem
+                    if (professorData.digito === digito && professorData.senha === senha) {
+                        return { success: true, user: professorData };
+                    } else {
+                        return { success: false, message: 'Credenciais inválidas!' };
+                    }
+                } else {
+                    return { success: false, message: 'Professor não encontrado!' };
+                }
+            } catch (error) {
+                console.error('Erro ao verificar credenciais:', error);
+                return { success: false, message: 'Erro de conexão. Tente novamente.' };
+            }
+        }
+
+        // Event listener para o formulário
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const nome = nomeInput.value.trim();
+            const digito = digitoInput.value.trim();
+            const senha = senhaInput.value.trim();
+            
+            // Validar campos
+            if (!nome || !digito || !senha) {
+                showError('Por favor, preencha todos os campos!');
+                return;
+            }
+            
+            showLoading();
+            
+            // Verificar credenciais
+            const result = await verificarCredenciais(nome, digito, senha);
+            
+            hideLoading();
+            
+            if (result.success) {
+                // Login bem-sucedido - redirecionar para Home.html
+                // Você pode armazenar dados do professor em memoria se necessário
+                sessionStorage.setItem('professorData', JSON.stringify(result.user));
+                window.location.href = 'Home.html';
+            } else {
+                showError(result.message);
+            }
+        });
+
+        // Limpar erro quando usuário começar a digitar
+        [nomeInput, digitoInput, senhaInput].forEach(input => {
+            input.addEventListener('input', clearError);
+        });
+    </script>
+</body>
+</html>

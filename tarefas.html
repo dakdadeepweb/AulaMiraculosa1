@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarefas - Portal do Professor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 2px 0 20px rgba(0, 0, 0, 0.1);
+            padding: 2rem 0;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+        }
+
+        .sidebar h2 {
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar li {
+            margin: 0.5rem 0;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 1rem 2rem;
+            color: #4a5568;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar a:hover, .sidebar a.active {
+            background: rgba(102, 126, 234, 0.1);
+            border-left-color: #667eea;
+            transform: translateX(5px);
+            color: #667eea;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            flex: 1;
+            padding: 2rem;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: #4a5568;
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+        }
+
+        .tarefas-lista {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .alunos-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .tarefa-card {
+            background: rgba(102, 126, 234, 0.05);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .tarefa-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .tarefa-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+        }
+
+        .tarefa-info {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .aluno-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .aluno-nome {
+            font-weight: 500;
+            color: #4a5568;
+        }
+
+        .aluno-tarefas {
+            background: #667eea;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: white;
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideIn 0.3s ease;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .questoes-container {
+            border: 2px dashed #e2e8f0;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .questao-item {
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .alternativa-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .alternativa-item input[type="text"] {
+            flex: 1;
+        }
+
+        .alternativa-item input[type="radio"] {
+            margin: 0;
+        }
+
+        .btn-remove {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .btn-add {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        .close {
+            color: white;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            opacity: 0.7;
+        }
+
+        .close:hover {
+            opacity: 1;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <h2>Menu</h2>
+        <ul>
+            <li><a href="Home.html">🏠 Home</a></li>
+            <li><a href="tarefas.html" class="active">📋 Tarefas</a></li>
+            <li><a href="redacoes.html">📝 Redações</a></li>
+            <li><a href="fechamento.html">📊 Fechamento</a></li>
+            <li><a href="frequencia.html">📅 Frequência</a></li>
+            <li><a href="perfil.html">👤 Perfil</a></li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        <div class="header">
+            <h1>📋 Gerenciar Tarefas</h1>
+            <div class="header-buttons">
+                <button class="btn btn-primary" id="btnLancarTarefa">
+                    ➕ Lançar Tarefa
+                </button>
+                <button class="btn btn-secondary" id="btnPorcentagem">
+                    📊 Porcentagem
+                </button>
+            </div>
+        </div>
+
+        <div class="content-grid">
+            <div class="tarefas-lista">
+                <h3>Tarefas Ativas</h3>
+                <div id="tarefasContainer">
+                    <div class="loading" id="loadingTarefas">
+                        <div class="spinner"></div>
+                        <p>Carregando tarefas...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alunos-panel">
+                <h3>Alunos da Turma</h3>
+                <div id="alunosContainer">
+                    <div class="loading" id="loadingAlunos">
+                        <div class="spinner"></div>
+                        <p>Carregando alunos...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Lançar Tarefa -->
+    <div id="modalLancarTarefa" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" id="closeModalTarefa">&times;</span>
+                <h2>🚀 Lançar Nova Tarefa</h2>
+            </div>
+            <div class="modal-body">
+                <form id="formTarefa">
+                    <div class="form-group">
+                        <label for="nomeTarefa">Nome da Tarefa:</label>
+                        <input type="text" id="nomeTarefa" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="materiaTarefa">Sua Matéria:</label>
+                        <input type="text" id="materiaTarefa" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notaMaxima">Nota Máxima:</label>
+                        <input type="number" id="notaMaxima" min="1" max="10" step="0.1" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Questões:</label>
+                        <div class="questoes-container" id="questoesContainer">
+                            <!-- Questões serão adicionadas aqui dinamicamente -->
+                        </div>
+                        <button type="button" class="btn-add" id="btnAdicionarQuestao">
+                            ➕ Adicionar Questão
+                        </button>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 2rem;">
+                        <button type="submit" class="btn btn-primary" style="padding: 15px 30px; font-size: 1.1rem;">
+                            🚀 Lançar Tarefa
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Porcentagem -->
+    <div id="modalPorcentagem" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" id="closeModalPorcentagem">&times;</span>
+                <h2>📊 Estatísticas das Tarefas</h2>
+            </div>
+            <div class="modal-body">
+                <div id="statsContainer">
+                    <div class="loading" id="loadingStats">
+                        <div class="spinner"></div>
+                        <p>Calculando estatísticas...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.min.js"></script>
+
+    <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCL2e1Zi-pzXQZ-02vQf6I8rYjbi5IzaRo",
+            authDomain: "aula-miraculosa.firebaseapp.com",
+            databaseURL: "https://aula-miraculosa-default-rtdb.firebaseio.com",
+            projectId: "aula-miraculosa",
+            storageBucket: "aula-miraculosa.firebasestorage.app",
+            messagingSenderId: "1067250456026",
+            appId: "1:1067250456026:web:632e43e793155444035ce3"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Variáveis globais
+        let questaoCounter = 0;
+        let tarefas = {};
+        let alunos = {};
+
+        // Elementos do DOM
+        const modalLancarTarefa = document.getElementById('modalLancarTarefa');
+        const modalPorcentagem = document.getElementById('modalPorcentagem');
+        const btnLancarTarefa = document.getElementById('btnLancarTarefa');
+        const btnPorcentagem = document.getElementById('btnPorcentagem');
+
+        // Event Listeners
+        btnLancarTarefa.addEventListener('click', () => {
+            modalLancarTarefa.style.display = 'block';
+            if (questaoCounter === 0) {
+                adicionarQuestao(); // Adiciona uma questão inicial
+            }
+        });
+
+        btnPorcentagem.addEventListener('click', () => {
+            modalPorcentagem.style.display = 'block';
+            carregarEstatisticas();
+        });
+
+        // Fechar modais
+        document.getElementById('closeModalTarefa').addEventListener('click', () => {
+            modalLancarTarefa.style.display = 'none';
+        });
+
+        document.getElementById('closeModalPorcentagem').addEventListener('click', () => {
+            modalPorcentagem.style.display = 'none';
+        });
+
+        // Fechar modal clicando fora
+        window.addEventListener('click', (e) => {
+            if (e.target === modalLancarTarefa) {
+                modalLancarTarefa.style.display = 'none';
+            }
+            if (e.target === modalPorcentagem) {
+                modalPorcentagem.style.display = 'none';
+            }
+        });
+
+        // Adicionar questão
+        document.getElementById('btnAdicionarQuestao').addEventListener('click', adicionarQuestao);
+
+        function adicionarQuestao() {
+            questaoCounter++;
+            const questoesContainer = document.getElementById('questoesContainer');
+            
+            const questaoDiv = document.createElement('div');
+            questaoDiv.className = 'questao-item';
+            questaoDiv.innerHTML = `
+                <div class="form-group">
+                    <label>Nome da Questão ${questaoCounter}:</label>
+                    <input type="text" name="nomeQuestao_${questaoCounter}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Imagem (opcional):</label>
+                    <input type="url" name="imagemQuestao_${questaoCounter}" placeholder="URL da imagem">
+                </div>
+                
+                <div class="form-group">
+                    <label>Alternativas:</label>
+                    <div id="alternativas_${questaoCounter}">
+                        <div class="alternativa-item">
+                            <input type="radio" name="respostaCerta_${questaoCounter}" value="0" required>
+                            <input type="text" name="alternativa_${questaoCounter}_0" placeholder="Alternativa A" required>
+                        </div>
+                        <div class="alternativa-item">
+                            <input type="radio" name="respostaCerta_${questaoCounter}" value="1" required>
+                            <input type="text" name="alternativa_${questaoCounter}_1" placeholder="Alternativa B" required>
+                        </div>
+                        <div class="alternativa-item">
+                            <input type="radio" name="respostaCerta_${questaoCounter}" value="2" required>
+                            <input type="text" name="alternativa_${questaoCounter}_2" placeholder="Alternativa C" required>
+                        </div>
+                        <div class="alternativa-item">
+                            <input type="radio" name="respostaCerta_${questaoCounter}" value="3" required>
+                            <input type="text" name="alternativa_${questaoCounter}_3" placeholder="Alternativa D" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="button" class="btn-remove" onclick="removerQuestao(this)">
+                    🗑️ Remover Questão
+                </button>
+            `;
+            
+            questoesContainer.appendChild(questaoDiv);
+        }
+
+        function removerQuestao(btn) {
+            btn.parentElement.remove();
+        }
+
+        // Submit do formulário
+        document.getElementById('formTarefa').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const nomeTarefa = document.getElementById('nomeTarefa').value;
+            const materiaTarefa = document.getElementById('materiaTarefa').value;
+            const notaMaxima = parseFloat(document.getElementById('notaMaxima').value);
+            
+            // Construir objeto da tarefa
+            const tarefa = {
+                nome: nomeTarefa,
+                materia: materiaTarefa,
+                notaMaxima: notaMaxima,
+                dataLancamento: new Date().toISOString(),
+                questoes: []
+            };
+            
+            // Coletar questões
+            const questoesItems = document.querySelectorAll('.questao-item');
+            
+            questoesItems.forEach((questaoDiv, index) => {
+                const nomeQuestaoInput = questaoDiv.querySelector('input[name*="nomeQuestao"]');
+                const imagemQuestaoInput = questaoDiv.querySelector('input[name*="imagemQuestao"]');
+                const alternativasInputs = questaoDiv.querySelectorAll('input[name*="alternativa"]:not([type="radio"])');
+                const respostaCertaInput = questaoDiv.querySelector('input[name*="respostaCerta"]:checked');
+                
+                if (nomeQuestaoInput && nomeQuestaoInput.value.trim()) {
+                    const alternativas = [];
+                    alternativasInputs.forEach(input => {
+                        if (input.value.trim()) {
+                            alternativas.push(input.value.trim());
+                        }
+                    });
+                    
+                    const questao = {
+                        nome: nomeQuestaoInput.value.trim(),
+                        imagem: imagemQuestaoInput?.value.trim() || null,
+                        alternativas: alternativas,
+                        respostaCerta: parseInt(respostaCertaInput?.value || 0)
+                    };
+                    
+                    tarefa.questoes.push(questao);
+                }
+            });
+            
+            if (tarefa.questoes.length === 0) {
+                alert('Adicione pelo menos uma questão!');
+                return;
+            }
+            
+            try {
+                // Salvar no Firebase
+                const tarefaRef = database.ref('tarefas').push();
+                await tarefaRef.set(tarefa);
+                
+                alert('Tarefa lançada com sucesso!');
+                modalLancarTarefa.style.display = 'none';
+                document.getElementById('formTarefa').reset();
+                document.getElementById('questoesContainer').innerHTML = '';
+                questaoCounter = 0;
+                
+                // Recarregar lista de tarefas
+                carregarTarefas();
+                
+            } catch (error) {
+                console.error('Erro ao lançar tarefa:', error);
+                alert('Erro ao lançar tarefa. Tente novamente.');
+            }
+        });
+
+        // Carregar tarefas
+        async function carregarTarefas() {
+            const loadingTarefas = document.getElementById('loadingTarefas');
+            const tarefasContainer = document.getElementById('tarefasContainer');
+            
+            loadingTarefas.style.display = 'block';
+            
+            try {
+                const tarefasRef = database.ref('tarefas');
+                const snapshot = await tarefasRef.once('value');
+                
+                tarefasContainer.innerHTML = '';
+                
+                if (snapshot.exists()) {
+                    tarefas = snapshot.val();
+                    
+                    Object.entries(tarefas).forEach(([id, tarefa]) => {
+                        const tarefaCard = document.createElement('div');
+                        tarefaCard.className = 'tarefa-card';
+                        tarefaCard.innerHTML = `
+                            <div class="tarefa-title">${tarefa.nome}</div>
+                            <div class="tarefa-info">
+                                <p><strong>Matéria:</strong> ${tarefa.materia}</p>
+                                <p><strong>Nota Máxima:</strong> ${tarefa.notaMaxima}</p>
+                                <p><strong>Professor:</strong> ${tarefa.professor}</p>
+                                <p><strong>Questões:</strong> ${tarefa.questoes?.length || 0}</p>
+                                <p><strong>Lançada em:</strong> ${new Date(tarefa.dataLancamento).toLocaleDateString()}</p>
+                            </div>
+                        `;
+                        tarefasContainer.appendChild(tarefaCard);
+                    });
+                } else {
+                    tarefasContainer.innerHTML = '<p style="text-align: center; color: #6b7280;">Nenhuma tarefa encontrada.</p>';
+                }
+                
+            } catch (error) {
+                console.error('Erro ao carregar tarefas:', error);
+                tarefasContainer.innerHTML = '<p style="text-align: center; color: #ef4444;">Erro ao carregar tarefas.</p>';
+            } finally {
+                loadingTarefas.style.display = 'none';
+            }
+        }
+
+        // Carregar alunos
+        async function carregarAlunos() {
+            const loadingAlunos = document.getElementById('loadingAlunos');
+            const alunosContainer = document.getElementById('alunosContainer');
+            
+            loadingAlunos.style.display = 'block';
+            
+            try {
+                const alunosRef = database.ref('alunos');
+                const snapshot = await alunosRef.once('value');
+                
+                alunosContainer.innerHTML = '';
+                
+                if (snapshot.exists()) {
+                    alunos = snapshot.val();
+                    
+                    Object.entries(alunos).forEach(([nome, alunoData]) => {
+                        const tarefasFeitas = alunoData.tarefasFeitas ? Object.keys(alunoData.tarefasFeitas).length : 0;
+                        
+                        const alunoDiv = document.createElement('div');
+                        alunoDiv.className = 'aluno-item';
+                        alunoDiv.innerHTML = `
+                            <span class="aluno-nome">${nome}</span>
+                            <span class="aluno-tarefas">${tarefasFeitas}</span>
+                        `;
+                        alunosContainer.appendChild(alunoDiv);
+                    });
+                } else {
+                    alunosContainer.innerHTML = '<p style="text-align: center; color: #6b7280;">Nenhum aluno encontrado.</p>';
+                }
+                
+            } catch (error) {
+                console.error('Erro ao carregar alunos:', error);
+                alunosContainer.innerHTML = '<p style="text-align: center; color: #ef4444;">Erro ao carregar alunos.</p>';
+            } finally {
+                loadingAlunos.style.display = 'none';
+            }
+        }
+
+        // Carregar estatísticas
+        async function carregarEstatisticas() {
+            const loadingStats = document.getElementById('loadingStats');
+            const statsContainer = document.getElementById('statsContainer');
+            
+            loadingStats.style.display = 'block';
+            
+            try {
+                // Calcular estatísticas baseadas nos dados carregados
+                const totalAlunos = Object.keys(alunos).length;
+                const totalTarefas = Object.keys(tarefas).length;
+                
+                let alunosComTarefas = 0;
+                let totalAcertos = 0;
+                let totalTentativas = 0;
+                
+                Object.values(alunos).forEach(aluno => {
+                    if (aluno.tarefasFeitas && Object.keys(aluno.tarefasFeitas).length > 0) {
+                        alunosComTarefas++;
+                        
+                        Object.values(aluno.tarefasFeitas).forEach(tarefa => {
+                            totalTentativas++;
+                            if (tarefa.acertou) {
+                                totalAcertos++;
+                            }
+                        });
+                    }
+                });
+                
+                const porcentagemFizeram = totalAlunos > 0 ? (alunosComTarefas / totalAlunos * 100).toFixed(1) : 0;
+                const porcentagemAcertos = totalTentativas > 0 ? (totalAcertos / totalTentativas * 100).toFixed(1) : 0;
+                const porcentagemNaoFizeram = (100 - porcentagemFizeram).toFixed(1);
+                
+                statsContainer.innerHTML = `
+                    <div class="stats-grid">
+                        <div class="stat-card" style="background: linear-gradient(135deg, #10b981, #059669);">
+                            <div class="stat-number">${porcentagemFizeram}%</div>
+                            <div class="stat-label">Fizeram Tarefas</div>
+                        </div>
+                        <div class="stat-card" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                            <div class="stat-number">${porcentagemAcertos}%</div>
+                            <div class="stat-label">Taxa de Acertos</div>
+                        </div>
+                        <div class="stat-card" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
+                            <div class="stat-number">${porcentagemNaoFizeram}%</div>
+                            <div class="stat-label">Não Fizeram</div>
+                        </div>
+                        <div class="stat-card" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                            <div class="stat-number">${totalAlunos}</div>
+                            <div class="stat-label">Total de Alunos</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 2rem;">
+                        <h4 style="color: #4a5568; margin-bottom: 1rem;">Detalhes por Tarefa:</h4>
+                        <div id="detalhesTarefas">
+                            ${gerarDetalhesTarefas()}
+                        </div>
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('Erro ao carregar estatísticas:', error);
+                statsContainer.innerHTML = '<p style="text-align: center; color: #ef4444;">Erro ao carregar estatísticas.</p>';
+            } finally {
+                loadingStats.style.display = 'none';
+            }
+        }
+
+        function gerarDetalhesTarefas() {
+            let html = '';
+            
+            Object.entries(tarefas).forEach(([tarefaId, tarefa]) => {
+                let alunosQueResponderamTarefa = 0;
+                let acertosNaTarefa = 0;
+                
+                Object.values(alunos).forEach(aluno => {
+                    if (aluno.tarefasFeitas && aluno.tarefasFeitas[tarefaId]) {
+                        alunosQueResponderamTarefa++;
+                        if (aluno.tarefasFeitas[tarefaId].acertou) {
+                            acertosNaTarefa++;
+                        }
+                    }
+                });
+                
+                const totalAlunos = Object.keys(alunos).length;
+                const porcentagemResponderam = totalAlunos > 0 ? (alunosQueResponderamTarefa / totalAlunos * 100).toFixed(1) : 0;
+                const porcentagemAcertos = alunosQueResponderamTarefa > 0 ? (acertosNaTarefa / alunosQueResponderamTarefa * 100).toFixed(1) : 0;
+                
+                html += `
+                    <div style="background: rgba(102, 126, 234, 0.05); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                        <h5 style="color: #4a5568; margin-bottom: 0.5rem;">${tarefa.nome}</h5>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                            <div>
+                                <strong>Responderam:</strong> ${alunosQueResponderamTarefa}/${totalAlunos} (${porcentagemResponderam}%)
+                            </div>
+                            <div>
+                                <strong>Acertaram:</strong> ${acertosNaTarefa}/${alunosQueResponderamTarefa} (${porcentagemAcertos}%)
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            return html || '<p style="text-align: center; color: #6b7280;">Nenhuma tarefa disponível.</p>';
+        }
+
+        // Carregar dados iniciais
+        window.addEventListener('load', () => {
+            carregarTarefas();
+            carregarAlunos();
+        });
+    </script>
+</body>
+</html>

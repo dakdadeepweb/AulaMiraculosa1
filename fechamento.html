@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fechamento - Portal do Professor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 2px 0 20px rgba(0, 0, 0, 0.1);
+            padding: 2rem 0;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+        }
+
+        .sidebar h2 {
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar li {
+            margin: 0.5rem 0;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 1rem 2rem;
+            color: #4a5568;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar a:hover, .sidebar a.active {
+            background: rgba(102, 126, 234, 0.1);
+            border-left-color: #667eea;
+            transform: translateX(5px);
+            color: #667eea;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            flex: 1;
+            padding: 2rem;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: #4a5568;
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+
+        .header-info {
+            color: #6b7280;
+            font-size: 1.1rem;
+        }
+
+        .fechamento-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+
+        .table-container {
+            min-width: 800px;
+            margin-bottom: 2rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        td {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: middle;
+        }
+
+        tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .aluno-nome {
+            font-weight: 600;
+            color: #4a5568;
+            text-align: left;
+            min-width: 150px;
+        }
+
+        .tarefas-count {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .trabalho-nota {
+            padding: 8px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            width: 80px;
+            text-align: center;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .trabalho-nota:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-add-trabalho {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .btn-add-trabalho:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .media-final {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: white;
+            margin: 10% auto;
+            padding: 0;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            animation: slideIn 0.3s ease;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px 15px 0 0;
+            text-align: center;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn-modal {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-confirm {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-cancel {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .btn-close {
+            background: #6b7280;
+            color: white;
+        }
+
+        .success-modal .modal-header {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .close {
+            color: white;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            opacity: 0.7;
+            line-height: 1;
+        }
+
+        .close:hover {
+            opacity: 1;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .peso-info {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: #4a5568;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+            
+            .main-content {
+                margin-left: 200px;
+                padding: 1rem;
+            }
+            
+            .actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .table-container {
+                font-size: 0.9rem;
+            }
+            
+            th, td {
+                padding: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <h2>Menu</h2>
+        <ul>
+            <li><a href="Home.html">🏠 Home</a></li>
+            <li><a href="tarefas.html">📋 Tarefas</a></li>
+            <li><a href="redacoes.html">📝 Redações</a></li>
+            <li><a href="fechamento.html" class="active">📊 Fechamento</a></li>
+            <li><a href="frequencia.html">📅 Frequência</a></li>
+            <li><a href="perfil.html">👤 Perfil</a></li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        <div class="header">
+            <h1>📊 Fechamento de Notas</h1>
+            <div class="header-info">
+                Gerencie as notas finais dos alunos e calcule as médias
+            </div>
+        </div>
+
+        <div class="fechamento-container">
+            <div class="peso-info">
+                <strong>📌 Sistema de Pesos:</strong> Tarefas = 30% | Trabalhos = 70% da nota final
+            </div>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Carregando dados...</p>
+            </div>
+
+            <div class="table-container" id="table-container" style="display: none;">
+                <table id="fechamento-table">
+                    <thead>
+                        <tr>
+                            <th>Alunos</th>
+                            <th>Tarefas Realizadas</th>
+                            <th class="btn-add-trabalho" id="add-trabalho-btn">➕ Adicionar Trabalho</th>
+                            <th>Média Final</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fechamento-tbody">
+                        <!-- Dados serão inseridos aqui -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="actions">
+                <button class="btn btn-primary" id="calcular-media">
+                    🧮 Calcular Média
+                </button>
+                <button class="btn btn-success" id="salvar-rascunho">
+                    💾 Salvar
+                </button>
+                <button class="btn btn-warning" id="salvar-fechamento">
+                    🔒 Salvar Fechamento
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Adicionar Trabalho -->
+    <div id="modal-trabalho" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" id="close-trabalho">&times;</span>
+                <h2>➕ Adicionar Trabalho</h2>
+            </div>
+            <div class="modal-body">
+                <form id="form-trabalho">
+                    <div class="form-group">
+                        <label for="nome-trabalho">Nome do Trabalho:</label>
+                        <input type="text" id="nome-trabalho" required placeholder="Ex: Trabalho de História">
+                    </div>
+                    <div class="form-group">
+                        <label for="peso-trabalho">Peso do Trabalho:</label>
+                        <input type="number" id="peso-trabalho" min="0.1" max="10" step="0.1" required placeholder="Ex: 2.0">
+                    </div>
+                    <div class="modal-buttons">
+                        <button type="submit" class="btn-modal btn-confirm">✅ Salvar</button>
+                        <button type="button" class="btn-modal btn-cancel" id="cancel-trabalho">❌ Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Confirmação Fechamento -->
+    <div id="modal-confirmacao" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚠️ Confirmar Fechamento</h2>
+            </div>
+            <div class="modal-body">
+                <p style="text-align: center; font-size: 1.1rem; color: #4a5568; margin-bottom: 2rem;">
+                    <strong>Tem certeza?</strong><br>
+                    Após esse salvamento, só será possível refazer esse fechamento após a prova de recuperação!
+                </p>
+                <div class="modal-buttons">
+                    <button class="btn-modal btn-confirm" id="confirmar-fechamento">✅ Sim</button>
+                    <button class="btn-modal btn-cancel" id="cancelar-fechamento">❌ Não</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Sucesso -->
+    <div id="modal-sucesso" class="modal success-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="success-icon">✅</div>
+                <h2>Fechamento salvo com sucesso!</h2>
+            </div>
+            <div class="modal-body">
+                <div class="modal-buttons">
+                    <button class="btn-modal btn-close" id="fechar-sucesso">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Rascunho -->
+    <div id="modal-rascunho" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>💾 Fechamento salvo!</h2>
+            </div>
+            <div class="modal-body">
+                <div class="modal-buttons">
+                    <button class="btn-modal btn-close" id="fechar-rascunho">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.min.js"></script>
+
+    <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCL2e1Zi-pzXQZ-02vQf6I8rYjbi5IzaRo",
+            authDomain: "aula-miraculosa.firebaseapp.com",
+            databaseURL: "https://aula-miraculosa-default-rtdb.firebaseio.com",
+            projectId: "aula-miraculosa",
+            storageBucket: "aula-miraculosa.firebasestorage.app",
+            messagingSenderId: "1067250456026",
+            appId: "1:1067250456026:web:632e43e793155444035ce3"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Variáveis globais
+        let alunos = {};
+        let tarefas = {};
+        let trabalhos = [];
+        let fechamentoData = {};
+
+        // Elementos DOM
+        const loading = document.getElementById('loading');
+        const tableContainer = document.getElementById('table-container');
+        const fechamentoTable = document.getElementById('fechamento-table');
+        const fechamentoTbody = document.getElementById('fechamento-tbody');
+
+        // Modals
+        const modalTrabalho = document.getElementById('modal-trabalho');
+        const modalConfirmacao = document.getElementById('modal-confirmacao');
+        const modalSucesso = document.getElementById('modal-sucesso');
+        const modalRascunho = document.getElementById('modal-rascunho');
+
+        // Event Listeners
+        document.getElementById('add-trabalho-btn').addEventListener('click', () => {
+            modalTrabalho.style.display = 'block';
+        });
+
+        document.getElementById('close-trabalho').addEventListener('click', () => {
+            modalTrabalho.style.display = 'none';
+        });
+
+        document.getElementById('cancel-trabalho').addEventListener('click', () => {
+            modalTrabalho.style.display = 'none';
+        });
+
+        document.getElementById('form-trabalho').addEventListener('submit', adicionarTrabalho);
+        document.getElementById('calcular-media').addEventListener('click', calcularMedias);
+        document.getElementById('salvar-rascunho').addEventListener('click', salvarRascunho);
+        document.getElementById('salvar-fechamento').addEventListener('click', () => {
+            modalConfirmacao.style.display = 'block';
+        });
+
+        document.getElementById('confirmar-fechamento').addEventListener('click', salvarFechamentoFinal);
+        document.getElementById('cancelar-fechamento').addEventListener('click', () => {
+            modalConfirmacao.style.display = 'none';
+        });
+
+        document.getElementById('fechar-sucesso').addEventListener('click', () => {
+            modalSucesso.style.display = 'none';
+        });
+
+        document.getElementById('fechar-rascunho').addEventListener('click', () => {
+            modalRascunho.style.display = 'none';
+        });
+
+        // Fechar modals clicando fora
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                e.target.style.display = 'none';
+            }
+        });
+
+        // Carregar dados iniciais
+        async function carregarDados() {
+            loading.style.display = 'block';
+            
+            try {
+                // Carregar alunos
+                const alunosSnapshot = await database.ref('alunos').once('value');
+                if (alunosSnapshot.exists()) {
+                    alunos = alunosSnapshot.val();
+                }
+
+                // Carregar tarefas
+                const tarefasSnapshot = await database.ref('tarefas').once('value');
+                if (tarefasSnapshot.exists()) {
+                    tarefas = tarefasSnapshot.val();
+                }
+
+                // Carregar fechamento existente (se houver)
+                const fechamentoSnapshot = await database.ref('fechamento').once('value');
+                if (fechamentoSnapshot.exists()) {
+                    fechamentoData = fechamentoSnapshot.val();
+                    trabalhos = fechamentoData.trabalhos || [];
+                }
+
+                criarTabela();
+                
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+                alert('Erro ao carregar dados. Recarregue a página.');
+            } finally {
+                loading.style.display = 'none';
+                tableContainer.style.display = 'block';
+            }
+        }
+
+        // Criar tabela
+        function criarTabela() {
+            // Limpar tbody
+            fechamentoTbody.innerHTML = '';
+
+            // Atualizar cabeçalho com trabalhos
+            atualizarCabecalho();
+
+            // Criar linhas para cada aluno
+            Object.keys(alunos).forEach(nomeAluno => {
+                const tr = document.createElement('tr');
+                tr.dataset.aluno = nomeAluno;
+
+                // Coluna nome
+                const tdNome = document.createElement('td');
+                tdNome.className = 'aluno-nome';
+                tdNome.textContent = nomeAluno;
+                tr.appendChild(tdNome);
+
+                // Coluna tarefas realizadas
+                const tdTarefas = document.createElement('td');
+                const tarefasCount = contarTarefasAluno(nomeAluno);
+                tdTarefas.innerHTML = `<span class="tarefas-count">${tarefasCount}</span>`;
+                tr.appendChild(tdTarefas);
+
+                // Colunas trabalhos
+                trabalhos.forEach((trabalho, index) => {
+                    const tdTrabalho = document.createElement('td');
+                    const input = document.createElement('input');
+                    input.type = 'number';
+                    input.className = 'trabalho-nota';
+                    input.min = '0';
+                    input.max = '10';
+                    input.step = '0.1';
+                    input.placeholder = '0.0';
+                    input.dataset.aluno = nomeAluno;
+                    input.dataset.trabalho = index;
+                    
+                    // Carregar nota existente se houver
+                    if (fechamentoData.notas && fechamentoData.notas[nomeAluno] && fechamentoData.notas[nomeAluno].trabalhos) {
+                        input.value = fechamentoData.notas[nomeAluno].trabalhos[index] || '';
+                    }
+                    
+                    tdTrabalho.appendChild(input);
+                    tr.appendChild(tdTrabalho);
+                });
+
+                // Coluna média final
+                const tdMedia = document.createElement('td');
+                tdMedia.className = 'media-cell';
+                tdMedia.innerHTML = '<span class="media-final">-</span>';
+                tr.appendChild(tdMedia);
+
+                fechamentoTbody.appendChild(tr);
+            });
+        }
+
+        // Atualizar cabeçalho
+        function atualizarCabecalho() {
+            const thead = fechamentoTable.querySelector('thead tr');
+            
+            // Remover colunas de trabalhos existentes
+            const existingTrabalhos = thead.querySelectorAll('.trabalho-header');
+            existingTrabalhos.forEach(th => th.remove());
+
+            // Adicionar colunas de trabalhos antes do botão e média
+            const btnTh = thead.querySelector('#add-trabalho-btn');
+            
+            trabalhos.forEach((trabalho, index) => {
+                const th = document.createElement('th');
+                th.className = 'trabalho-header';
+                th.innerHTML = `${trabalho.nome}<br><small>(Peso: ${trabalho.peso})</small>`;
+                thead.insertBefore(th, btnTh);
+            });
+        }
+
+        // Contar tarefas do aluno
+        function contarTarefasAluno(nomeAluno) {
+            if (!alunos[nomeAluno] || !alunos[nomeAluno].tarefasFeitas) {
+                return 0;
+            }
+            return Object.keys(alunos[nomeAluno].tarefasFeitas).length;
+        }
+
+        // Adicionar trabalho
+        function adicionarTrabalho(e) {
+            e.preventDefault();
+            
+            const nome = document.getElementById('nome-trabalho').value.trim();
+            const peso = parseFloat(document.getElementById('peso-trabalho').value);
+
+            if (!nome || !peso) {
+                alert('Preencha todos os campos!');
+                return;
+            }
+
+            trabalhos.push({ nome, peso });
+            
+            // Resetar form e fechar modal
+            document.getElementById('form-trabalho').reset();
+            modalTrabalho.style.display = 'none';
+            
+            // Recriar tabela
+            criarTabela();
+        }
+
+        // Calcular médias
+        function calcularMedias() {
+            const linhas = fechamentoTbody.querySelectorAll('tr');
+            
+            linhas.forEach(linha => {
+                const nomeAluno = linha.dataset.aluno;
+                const mediaCell = linha.querySelector('.media-cell');
+                
+                // Calcular média das tarefas (30%)
+                const tarefasCount = contarTarefasAluno(nomeAluno);
+                let mediaTarefas = 0;
+                
+                if (alunos[nomeAluno] && alunos[nomeAluno].tarefasFeitas) {
+                    let somaNotas = 0;
+                    let totalTarefas = 0;
+                    
+                    Object.values(alunos[nomeAluno].tarefasFeitas).forEach(tarefa => {
+                        if (tarefa.nota !== undefined) {
+                            somaNotas += tarefa.nota;
+                            totalTarefas++;
+                        }
+                    });
+                    
+                    if (totalTarefas > 0) {
+                        mediaTarefas = somaNotas / totalTarefas;
+                    }
+                }
+
+                // Calcular média dos trabalhos (70%)
+                let mediaTrabalhos = 0;
+                let pesoTotalTrabalhos = 0;
+                let somaPonderada = 0;
+                
+                const inputsTrabalho = linha.querySelectorAll('.trabalho-nota');
+                inputsTrabalho.forEach((input, index) => {
+                    const nota = parseFloat(input.value) || 0;
+                    const peso = trabalhos[index].peso;
+                    
+                    if (input.value && input.value.trim() !== '') {
+                        somaPonderada += nota * peso;
+                        pesoTotalTrabalhos += peso;
+                    }
+                });
+                
+                if (pesoTotalTrabalhos > 0) {
+                    mediaTrabalhos = somaPonderada / pesoTotalTrabalhos;
+                }
+
+                // Calcular média final
+                const mediaFinal = (mediaTarefas * 0.3) + (mediaTrabalhos * 0.7);
+                
+                // Atualizar display
+                mediaCell.innerHTML = `<span class="media-final">${mediaFinal.toFixed(1)}</span>`;
+            });
+        }
+
+        // Salvar rascunho
+        async function salvarRascunho() {
+            try {
+                const dadosParaSalvar = coletarDadosTabela();
+                dadosParaSalvar.tipo = 'rascunho';
+                dadosParaSalvar.timestamp = new Date().toISOString();
+                
+                await database.ref('fechamento').set(dadosParaSalvar);
+                modalRascunho.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Erro ao salvar rascunho:', error);
+                alert('Erro ao salvar rascunho!');
+            }
+        }
+
+        // Salvar fechamento final
+        async function salvarFechamentoFinal() {
+            try {
+                const dadosParaSalvar = coletarDadosTabela();
+                dadosParaSalvar.tipo = 'fechamento_final';
+                dadosParaSalvar.timestamp = new Date().toISOString();
+                
+                await database.ref('fechamento').set(dadosParaSalvar);
+                
+                modalConfirmacao.style.display = 'none';
+                modalSucesso.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Erro ao salvar fechamento:', error);
+                alert('Erro ao salvar fechamento!');
+            }
+        }
+
+        // Coletar dados da tabela
+        function coletarDadosTabela() {
+            const dados = {
+                trabalhos: trabalhos,
+                notas: {}
+            };
+
+            const linhas = fechamentoTbody.querySelectorAll('tr');
+            linhas.forEach(linha => {
+                const nomeAluno = linha.dataset.aluno;
+                const inputsTrabalho = linha.querySelectorAll('.trabalho-nota');
+                const mediaSpan = linha.querySelector('.media-final');
+                
+                dados.notas[nomeAluno] = {
+                    trabalhos: [],
+                    mediaFinal: mediaSpan ? mediaSpan.textContent : '-'
+                };
+
+                inputsTrabalho.forEach(input => {
+                    dados.notas[nomeAluno].trabalhos.push(input.value || '');
+                });
+            });
+
+            return dados;
+        }
+
+        // Inicializar
+        window.addEventListener('load', () => {
+            carregarDados();
+        });
+    </script>
+</body>
+</html>

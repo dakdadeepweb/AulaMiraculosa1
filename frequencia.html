@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frequência - Portal do Professor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 2px 0 20px rgba(0, 0, 0, 0.1);
+            padding: 2rem 0;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+        }
+
+        .sidebar h2 {
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar li {
+            margin: 0.5rem 0;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 1rem 2rem;
+            color: #4a5568;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar a:hover, .sidebar a.active {
+            background: rgba(102, 126, 234, 0.1);
+            border-left-color: #667eea;
+            transform: translateX(5px);
+            color: #667eea;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            flex: 1;
+            padding: 2rem;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: #4a5568;
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .aviso {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .aviso strong {
+            font-size: 1.2rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h3 {
+            color: #4a5568;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .alunos-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .alunos-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .alunos-header h3 {
+            color: #4a5568;
+            font-size: 1.5rem;
+        }
+
+        .marcacao-rapida {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .alunos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .aluno-card {
+            background: rgba(102, 126, 234, 0.05);
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .aluno-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .aluno-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .numero-circulo {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-weight: bold;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .aluno-nome {
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 1.1rem;
+        }
+
+        .aluno-controles {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-status {
+            width: 45px;
+            height: 45px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            opacity: 0.4;
+        }
+
+        .btn-presente {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-falta {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .btn-status.active {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .btn-status:hover {
+            transform: scale(1.05);
+            opacity: 0.8;
+        }
+
+        .btn-status.active:hover {
+            opacity: 1;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            text-align: center;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+            
+            .main-content {
+                margin-left: 200px;
+            }
+            
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .alunos-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-buttons {
+                flex-wrap: wrap;
+            }
+            
+            .marcacao-rapida {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <h2>Menu</h2>
+        <ul>
+            <li><a href="Home.html">🏠 Home</a></li>
+            <li><a href="tarefas.html">📋 Tarefas</a></li>
+            <li><a href="redacoes.html">📝 Redações</a></li>
+            <li><a href="fechamento.html">📊 Fechamento</a></li>
+            <li><a href="frequencia.html" class="active">📅 Frequência</a></li>
+            <li><a href="perfil.html">👤 Perfil</a></li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        <div class="header">
+            <h1>📅 Controle de Frequência</h1>
+            <div class="header-buttons">
+                <button class="btn btn-success" id="marcar-todos-presente">
+                    ✓ Marcar Todos P
+                </button>
+                <button class="btn btn-danger" id="marcar-todos-falta">
+                    ✗ Marcar Todos F
+                </button>
+            </div>
+        </div>
+
+        <div class="aviso">
+            <strong>⚠️ Aviso Importante!</strong>
+            <p>O prazo para lançamento de frequência será de até 8 dias corridos a partir da data da aula.</p>
+        </div>
+
+        <div class="content-grid">
+            <div class="card">
+                <h3>📅 Data da Aula</h3>
+                <div class="form-group">
+                    <label for="data-lancamento">Selecione a data:</label>
+                    <input type="date" id="data-lancamento" required>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🕐 Horário da Aula</h3>
+                <div class="form-group">
+                    <label for="horario-aula">Selecione o horário:</label>
+                    <select id="horario-aula" required>
+                        <option value="">Selecione um horário</option>
+                        <option value="08:00">08:00 - Primeira Aula</option>
+                        <option value="10:00">10:00 - Segunda Aula</option>
+                        <option value="14:00">14:00 - Terceira Aula</option>
+                        <option value="16:00">16:00 - Quarta Aula</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="alunos-container">
+            <div class="alunos-header">
+                <h3>👥 Lista de Alunos</h3>
+                <div class="marcacao-rapida">
+                    <button class="btn btn-success btn-sm" id="marcar-todos-presente-2">
+                        P - Todos Presentes
+                    </button>
+                    <button class="btn btn-danger btn-sm" id="marcar-todos-falta-2">
+                        F - Todos Faltaram
+                    </button>
+                </div>
+            </div>
+
+            <div class="loading" id="loading-alunos">
+                <div class="spinner"></div>
+                <p>Carregando alunos...</p>
+            </div>
+
+            <div class="alunos-grid" id="alunos-grid">
+                <!-- Alunos serão carregados aqui -->
+            </div>
+
+            <div class="actions">
+                <button class="btn btn-primary" id="salvar-frequencia" style="padding: 15px 30px; font-size: 1.1rem;">
+                    💾 Salvar Frequência
+                </button>
+            </div>
+
+            <div class="success-message" id="success-message">
+                ✅ Frequência salva com sucesso!
+            </div>
+        </div>
+    </main>
+
+    <!-- Firebase SDKs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.min.js"></script>
+
+    <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCL2e1Zi-pzXQZ-02vQf6I8rYjbi5IzaRo",
+            authDomain: "aula-miraculosa.firebaseapp.com",
+            databaseURL: "https://aula-miraculosa-default-rtdb.firebaseio.com",
+            projectId: "aula-miraculosa",
+            storageBucket: "aula-miraculosa.firebasestorage.app",
+            messagingSenderId: "1067250456026",
+            appId: "1:1067250456026:web:632e43e793155444035ce3"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Variáveis globais
+        let alunos = [];
+        let frequenciaAtual = {};
+
+        // Elementos do DOM
+        const loadingAlunos = document.getElementById('loading-alunos');
+        const alunosGrid = document.getElementById('alunos-grid');
+        const dataInput = document.getElementById('data-lancamento');
+        const horarioSelect = document.getElementById('horario-aula');
+        const successMessage = document.getElementById('success-message');
+
+        // Event Listeners
+        document.getElementById('marcar-todos-presente').addEventListener('click', () => marcarTodos('presente'));
+        document.getElementById('marcar-todos-presente-2').addEventListener('click', () => marcarTodos('presente'));
+        document.getElementById('marcar-todos-falta').addEventListener('click', () => marcarTodos('falta'));
+        document.getElementById('marcar-todos-falta-2').addEventListener('click', () => marcarTodos('falta'));
+        document.getElementById('salvar-frequencia').addEventListener('click', salvarFrequencia);
+
+        // Carregar alunos do Firebase
+        async function carregarAlunos() {
+            loadingAlunos.style.display = 'block';
+            alunosGrid.innerHTML = '';
+
+            try {
+                const alunosRef = database.ref('alunos');
+                const snapshot = await alunosRef.once('value');
+
+                if (snapshot.exists()) {
+                    alunos = [];
+                    let numero = 1;
+
+                    snapshot.forEach((alunoSnap) => {
+                        const nome = alunoSnap.key;
+                        alunos.push({ numero, nome });
+                        criarCardAluno(numero, nome);
+                        numero++;
+                    });
+                } else {
+                    alunosGrid.innerHTML = '<p style="text-align: center; color: #6b7280; grid-column: 1/-1;">Nenhum aluno encontrado.</p>';
+                }
+
+            } catch (error) {
+                console.error('Erro ao carregar alunos:', error);
+                alunosGrid.innerHTML = '<p style="text-align: center; color: #ef4444; grid-column: 1/-1;">Erro ao carregar alunos.</p>';
+            } finally {
+                loadingAlunos.style.display = 'none';
+            }
+        }
+
+        // Criar card do aluno
+        function criarCardAluno(numero, nome) {
+            const alunoCard = document.createElement('div');
+            alunoCard.className = 'aluno-card';
+            alunoCard.dataset.nome = nome;
+            alunoCard.dataset.status = '';
+
+            alunoCard.innerHTML = `
+                <div class="aluno-info">
+                    <div class="numero-circulo">${numero}</div>
+                    <div class="aluno-nome">${nome}</div>
+                </div>
+                <div class="aluno-controles">
+                    <button class="btn-status btn-presente" data-status="presente" title="Marcar como Presente">
+                        P
+                    </button>
+                    <button class="btn-status btn-falta" data-status="falta" title="Marcar como Falta">
+                        F
+                    </button>
+                </div>
+            `;
+
+            // Event listeners para os botões de status
+            const btnPresente = alunoCard.querySelector('.btn-presente');
+            const btnFalta = alunoCard.querySelector('.btn-falta');
+
+            btnPresente.addEventListener('click', () => {
+                marcarStatus(alunoCard, 'presente');
+            });
+
+            btnFalta.addEventListener('click', () => {
+                marcarStatus(alunoCard, 'falta');
+            });
+
+            alunosGrid.appendChild(alunoCard);
+        }
+
+        // Marcar status individual
+        function marcarStatus(alunoCard, status) {
+            const nome = alunoCard.dataset.nome;
+            const btnPresente = alunoCard.querySelector('.btn-presente');
+            const btnFalta = alunoCard.querySelector('.btn-falta');
+
+            // Reset buttons
+            btnPresente.classList.remove('active');
+            btnFalta.classList.remove('active');
+
+            // Activate selected button
+            if (status === 'presente') {
+                btnPresente.classList.add('active');
+            } else {
+                btnFalta.classList.add('active');
+            }
+
+            // Update data
+            alunoCard.dataset.status = status;
+            frequenciaAtual[nome] = status;
+        }
+
+        // Marcar todos
+        function marcarTodos(status) {
+            const alunoCards = document.querySelectorAll('.aluno-card');
+            
+            alunoCards.forEach(card => {
+                marcarStatus(card, status);
+            });
+
+            // Show feedback
+            const btn = status === 'presente' ? 
+                document.getElementById('marcar-todos-presente') : 
+                document.getElementById('marcar-todos-falta');
+            
+            const originalText = btn.textContent;
+            btn.textContent = status === 'presente' ? '✓ Marcado!' : '✗ Marcado!';
+            btn.style.opacity = '0.7';
+            
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.opacity = '1';
+            }, 1500);
+        }
+
+        // Salvar frequência
+        async function salvarFrequencia() {
+            const data = dataInput.value;
+            const horario = horarioSelect.value;
+
+            if (!data) {
+                alert('Por favor, selecione a data da aula.');
+                dataInput.focus();
+                return;
+            }
+
+            if (!horario) {
+                alert('Por favor, selecione o horário da aula.');
+                horarioSelect.focus();
+                return;
+            }
+
+            // Verificar se pelo menos um aluno foi marcado
+            const statusMarcados = Object.keys(frequenciaAtual).length;
+            if (statusMarcados === 0) {
+                alert('Por favor, marque a frequência de pelo menos um aluno.');
+                return;
+            }
+
+            const btnSalvar = document.getElementById('salvar-frequencia');
+            const originalText = btnSalvar.textContent;
+            
+            try {
+                btnSalvar.textContent = '💾 Salvando...';
+                btnSalvar.disabled = true;
+
+                // Preparar dados para salvar
+                const frequenciaData = {
+                    data: data,
+                    horario: horario,
+                    timestamp: new Date().toISOString(),
+                    alunos: {}
+                };
+
+                // Adicionar status de cada aluno
+                alunos.forEach(aluno => {
+                    const status = frequenciaAtual[aluno.nome] || 'não marcado';
+                    frequenciaData.alunos[aluno.nome] = {
+                        status: status,
+                        numero: aluno.numero
+                    };
+                });
+
+                // Salvar no Firebase
+                const frequenciaRef = database.ref(`frequencia/${data}_${horario.replace(':', '')}`);
+                await frequenciaRef.set(frequenciaData);
+
+                // Mostrar mensagem de sucesso
+                successMessage.style.display = 'block';
+                setTimeout(() => {
+                    successMessage.style.display = 'none';
+                }, 3000);
+
+                // Reset form
+                frequenciaAtual = {};
+                document.querySelectorAll('.btn-status').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.querySelectorAll('.aluno-card').forEach(card => {
+                    card.dataset.status = '';
+                });
+
+            } catch (error) {
+                console.error('Erro ao salvar frequência:', error);
+                alert('Erro ao salvar frequência. Tente novamente.');
+            } finally {
+                btnSalvar.textContent = originalText;
+                btnSalvar.disabled = false;
+            }
+        }
+
+        // Inicializar
+        window.addEventListener('load', () => {
+            carregarAlunos();
+            
+            // Set default date to today
+            const today = new Date().toISOString().split('T')[0];
+            dataInput.value = today;
+        });
+    </script>
+</body>
+</html>

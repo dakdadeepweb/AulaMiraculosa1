@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil - Portal do Professor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 2px 0 20px rgba(0, 0, 0, 0.1);
+            padding: 2rem 0;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+        }
+
+        .sidebar h2 {
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar li {
+            margin: 0.5rem 0;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 1rem 2rem;
+            color: #4a5568;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar a:hover, .sidebar a.active {
+            background: rgba(102, 126, 234, 0.1);
+            border-left-color: #667eea;
+            transform: translateX(5px);
+            color: #667eea;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .perfil-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .perfil-header {
+            margin-bottom: 3rem;
+        }
+
+        .perfil-header h1 {
+            color: #4a5568;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .saudacao {
+            color: #667eea;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+        }
+
+        .opcoes-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .opcao-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(102, 126, 234, 0.05);
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .opcao-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: #667eea;
+        }
+
+        .opcao-texto {
+            color: #4a5568;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: white;
+            margin: 15% auto;
+            padding: 0;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            animation: slideIn 0.3s ease;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px 15px 0 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #4a5568;
+            text-align: left;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn-modal {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-confirm {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-cancel {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .close {
+            position: absolute;
+            right: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            opacity: 0.7;
+        }
+
+        .close:hover {
+            opacity: 1;
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            text-align: center;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+            
+            .main-content {
+                margin-left: 200px;
+                padding: 1rem;
+            }
+            
+            .perfil-container {
+                padding: 2rem;
+            }
+            
+            .perfil-header h1 {
+                font-size: 2rem;
+            }
+            
+            .opcao-item {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <h2>Menu</h2>
+        <ul>
+            <li><a href="Home.html">🏠 Home</a></li>
+            <li><a href="tarefas.html">📋 Tarefas</a></li>
+            <li><a href="redacoes.html">📝 Redações</a></li>
+            <li><a href="fechamento.html">📊 Fechamento</a></li>
+            <li><a href="frequencia.html">📅 Frequência</a></li>
+            <li><a href="perfil.html" class="active">👤 Perfil</a></li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        <div class="perfil-container">
+            <div class="perfil-header">
+                <h1>👤 Perfil</h1>
+                <div class="saudacao">Olá Professor!</div>
+            </div>
+
+            <div class="opcoes-container">
+                <div class="opcao-item">
+                    <div class="opcao-texto">Gostaria de mudar sua senha?</div>
+                    <button class="btn btn-primary" id="btn-mudar-senha">
+                        🔐 Mudar Senha
+                    </button>
+                </div>
+
+                <div class="opcao-item">
+                    <div class="opcao-texto">Gostaria de alterar seu dígito?</div>
+                    <button class="btn btn-secondary" id="btn-mudar-digito">
+                        🔢 Mudar Dígito
+                    </button>
+                </div>
+            </div>
+
+            <div class="success-message" id="success-message">
+                ✅ Alteração realizada com sucesso!
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Mudar Senha -->
+    <div id="modal-senha" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" id="close-senha">&times;</span>
+                <h2>🔐 Mudar Senha</h2>
+            </div>
+            <div class="modal-body">
+                <form id="form-senha">
+                    <div class="form-group">
+                        <label for="nova-senha">Digite a nova senha aqui:</label>
+                        <input type="password" id="nova-senha" required placeholder="Digite sua nova senha">
+                    </div>
+                    <div class="modal-buttons">
+                        <button type="submit" class="btn-modal btn-confirm">✅ Salvar</button>
+                        <button type="button" class="btn-modal btn-cancel" id="cancel-senha">❌ Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Mudar Dígito -->
+    <div id="modal-digito" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" id="close-digito">&times;</span>
+                <h2>🔢 Mudar Dígito</h2>
+            </div>
+            <div class="modal-body">
+                <form id="form-digito">
+                    <div class="form-group">
+                        <label for="novo-digito">Digite seu novo dígito aqui:</label>
+                        <input type="number" id="novo-digito" required placeholder="Digite seu novo dígito" min="0" max="99999">
+                    </div>
+                    <div class="modal-buttons">
+                        <button type="submit" class="btn-modal btn-confirm">✅ Salvar</button>
+                        <button type="button" class="btn-modal btn-cancel" id="cancel-digito">❌ Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.min.js"></script>
+
+    <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCL2e1Zi-pzXQZ-02vQf6I8rYjbi5IzaRo",
+            authDomain: "aula-miraculosa.firebaseapp.com",
+            databaseURL: "https://aula-miraculosa-default-rtdb.firebaseio.com",
+            projectId: "aula-miraculosa",
+            storageBucket: "aula-miraculosa.firebasestorage.app",
+            messagingSenderId: "1067250456026",
+            appId: "1:1067250456026:web:632e43e793155444035ce3"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Elementos DOM
+        const modalSenha = document.getElementById('modal-senha');
+        const modalDigito = document.getElementById('modal-digito');
+        const successMessage = document.getElementById('success-message');
+
+        // Event Listeners - Botões principais
+        document.getElementById('btn-mudar-senha').addEventListener('click', () => {
+            modalSenha.style.display = 'block';
+        });
+
+        document.getElementById('btn-mudar-digito').addEventListener('click', () => {
+            modalDigito.style.display = 'block';
+        });
+
+        // Event Listeners - Fechar modais
+        document.getElementById('close-senha').addEventListener('click', () => {
+            modalSenha.style.display = 'none';
+        });
+
+        document.getElementById('close-digito').addEventListener('click', () => {
+            modalDigito.style.display = 'none';
+        });
+
+        document.getElementById('cancel-senha').addEventListener('click', () => {
+            modalSenha.style.display = 'none';
+        });
+
+        document.getElementById('cancel-digito').addEventListener('click', () => {
+            modalDigito.style.display = 'none';
+        });
+
+        // Event Listeners - Forms
+        document.getElementById('form-senha').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const novaSenha = document.getElementById('nova-senha').value;
+            
+            if (!novaSenha) {
+                alert('Por favor, digite uma senha!');
+                return;
+            }
+
+            try {
+                // Salvar nova senha no Firebase
+                await database.ref('professor/senha').set(novaSenha);
+                
+                // Fechar modal e mostrar sucesso
+                modalSenha.style.display = 'none';
+                document.getElementById('form-senha').reset();
+                mostrarSucesso();
+                
+            } catch (error) {
+                console.error('Erro ao alterar senha:', error);
+                alert('Erro ao alterar senha. Tente novamente.');
+            }
+        });
+
+        document.getElementById('form-digito').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const novoDigito = document.getElementById('novo-digito').value;
+            
+            if (!novoDigito) {
+                alert('Por favor, digite um dígito!');
+                return;
+            }
+
+            try {
+                // Salvar novo dígito no Firebase
+                await database.ref('professor/digito').set(parseInt(novoDigito));
+                
+                // Fechar modal e mostrar sucesso
+                modalDigito.style.display = 'none';
+                document.getElementById('form-digito').reset();
+                mostrarSucesso();
+                
+            } catch (error) {
+                console.error('Erro ao alterar dígito:', error);
+                alert('Erro ao alterar dígito. Tente novamente.');
+            }
+        });
+
+        // Fechar modais clicando fora
+        window.addEventListener('click', (e) => {
+            if (e.target === modalSenha) {
+                modalSenha.style.display = 'none';
+            }
+            if (e.target === modalDigito) {
+                modalDigito.style.display = 'none';
+            }
+        });
+
+        // Mostrar mensagem de sucesso
+        function mostrarSucesso() {
+            successMessage.style.display = 'block';
+            
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

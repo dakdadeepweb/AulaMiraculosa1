@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal do Professor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 2px 0 20px rgba(0, 0, 0, 0.1);
+            padding: 2rem 0;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar h2 {
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar li {
+            margin: 0.5rem 0;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 1rem 2rem;
+            color: #4a5568;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .sidebar a:hover::before {
+            left: 100%;
+        }
+
+        .sidebar a:hover {
+            background: rgba(102, 126, 234, 0.1);
+            border-left-color: #667eea;
+            transform: translateX(5px);
+            color: #667eea;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            flex: 1;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .welcome-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 4rem 3rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .welcome-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .welcome-title {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .welcome-subtitle {
+            color: #6b7280;
+            font-size: 1.2rem;
+            font-weight: 400;
+            margin-bottom: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            transform: translateY(0);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+            
+            .main-content {
+                margin-left: 200px;
+                padding: 2rem 1rem;
+            }
+            
+            .welcome-title {
+                font-size: 2.5rem;
+            }
+            
+            .welcome-container {
+                padding: 3rem 2rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .sidebar {
+                transform: translateX(-100%);
+                z-index: 1000;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .welcome-title {
+                font-size: 2rem;
+            }
+        }
+
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .floating-element {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-element:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-element:nth-child(2) {
+            width: 60px;
+            height: 60px;
+            top: 60%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+
+        .floating-element:nth-child(3) {
+            width: 100px;
+            height: 100px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+                opacity: 0.6;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-elements">
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+    </div>
+
+    <nav class="sidebar">
+        <h2>Menu</h2>
+        <ul>
+            <li><a href="tarefas.html">📋 Tarefas</a></li>
+            <li><a href="redacoes.html">📝 Redações</a></li>
+            <li><a href="fechamento.html">📊 Fechamento</a></li>
+            <li><a href="frequencia.html">📅 Frequência</a></li>
+            <li><a href="perfil.html">👤 Perfil</a></li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        <div class="welcome-container">
+            <h1 class="welcome-title">Bem Vindo Professor!</h1>
+            <p class="welcome-subtitle">Gerencie suas turmas e atividades de forma eficiente</p>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">0</div>
+                    <div class="stat-label">Tarefas Disponíveis</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">0</div>
+                    <div class="stat-label">Redações Disponíveis</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">1</div>
+                    <div class="stat-label">Turma</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCL2e1Zi-pzXQZ-02vQf6I8rYjbi5IzaRo",
+            authDomain: "aula-miraculosa.firebaseapp.com",
+            databaseURL: "https://aula-miraculosa-default-rtdb.firebaseio.com",
+            projectId: "aula-miraculosa",
+            storageBucket: "aula-miraculosa.firebasestorage.app",
+            messagingSenderId: "1067250456026",
+            appId: "1:1067250456026:web:632e43e793155444035ce3"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Verificar se o professor está logado
+        const professorData = sessionStorage.getItem('professorData');
+        const professorNome = sessionStorage.getItem('professorNome');
+
+        if (!professorData || !professorNome) {
+            // Redirecionar para login se não estiver logado
+            window.location.href = 'index.html';
+        }
+
+        // Função para carregar estatísticas do Firebase
+        async function carregarEstatisticas() {
+            try {
+                // Carregar todas as tarefas disponíveis
+                const tarefasRef = database.ref('tarefas');
+                const tarefasSnapshot = await tarefasRef.once('value');
+                let totalTarefas = 0;
+                
+                if (tarefasSnapshot.exists()) {
+                    const tarefas = tarefasSnapshot.val();
+                    // Contar todas as tarefas disponíveis
+                    totalTarefas = Object.keys(tarefas).length;
+                }
+
+                // Carregar todas as redações disponíveis
+                const redacoesRef = database.ref('redações');
+                const redacoesSnapshot = await redacoesRef.once('value');
+                let totalRedacoes = 0;
+                
+                if (redacoesSnapshot.exists()) {
+                    const redacoes = redacoesSnapshot.val();
+                    // Contar todas as redações disponíveis
+                    totalRedacoes = Object.keys(redacoes).length;
+                }
+
+                // Há apenas 1 turma no sistema
+                const totalTurmas = 1;
+
+                // Atualizar os cards com os dados reais
+                document.querySelector('.stat-card:nth-child(1) .stat-number').textContent = totalTarefas;
+                document.querySelector('.stat-card:nth-child(2) .stat-number').textContent = totalRedacoes;
+                document.querySelector('.stat-card:nth-child(3) .stat-number').textContent = totalTurmas;
+
+                // Animar os números
+                setTimeout(animateNumbers, 500);
+
+            } catch (error) {
+                console.error('Erro ao carregar estatísticas:', error);
+                // Manter valores padrão em caso de erro
+                document.querySelector('.stat-card:nth-child(1) .stat-number').textContent = 0;
+                document.querySelector('.stat-card:nth-child(2) .stat-number').textContent = 0;
+                document.querySelector('.stat-card:nth-child(3) .stat-number').textContent = 1;
+            }
+        }
+
+        // Adiciona interatividade aos itens do menu
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class de todos os links
+                document.querySelectorAll('.sidebar a').forEach(l => l.classList.remove('active'));
+                
+                // Adiciona active class ao link clicado
+                this.classList.add('active');
+                
+                // Animação de feedback
+                this.style.transform = 'translateX(10px)';
+                setTimeout(() => {
+                    this.style.transform = 'translateX(5px)';
+                }, 150);
+            });
+        });
+
+        // Animação das estatísticas
+        document.querySelectorAll('.stat-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.background = 'linear-gradient(135deg, #764ba2, #667eea)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+            });
+        });
+
+        // Animação de entrada dos números das estatísticas
+        function animateNumbers() {
+            const statNumbers = document.querySelectorAll('.stat-number');
+            statNumbers.forEach(stat => {
+                const finalNumber = parseInt(stat.textContent);
+                let currentNumber = 0;
+                const increment = finalNumber / 30;
+                
+                const timer = setInterval(() => {
+                    currentNumber += increment;
+                    if (currentNumber >= finalNumber) {
+                        stat.textContent = finalNumber;
+                        clearInterval(timer);
+                    } else {
+                        stat.textContent = Math.floor(currentNumber);
+                    }
+                }, 50);
+            });
+        }
+
+        // Executa quando a página carrega
+        window.addEventListener('load', () => {
+            carregarEstatisticas();
+        });
+    </script>
+    
+    <!-- Firebase SDKs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.min.js"></script>
+</body>
+</html>
