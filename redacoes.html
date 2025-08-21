@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redações - Portal do Aluno</title>
+    <title>Redações - Portal do Professor</title>
     <style>
         * {
             margin: 0;
@@ -28,8 +28,6 @@
             height: 100vh;
             left: 0;
             top: 0;
-            overflow-y: auto;
-            z-index: 100;
         }
 
         .sidebar h2 {
@@ -69,7 +67,6 @@
             margin-left: 250px;
             flex: 1;
             padding: 2rem;
-            min-height: 100vh;
         }
 
         .header {
@@ -79,115 +76,139 @@
             padding: 2rem;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             margin-bottom: 2rem;
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .header h1 {
             color: #4a5568;
             font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .header p {
-            color: #6b7280;
-            font-size: 1.1rem;
-        }
-
-        .redacoes-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 2rem;
-        }
-
-        .redacao-card {
-            background: white;
-            border: 3px solid #ef4444;
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .redacao-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 50px rgba(239, 68, 68, 0.2);
-            border-color: #dc2626;
-        }
-
-        .redacao-card.feita {
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
-
-        .redacao-card.feita:hover {
-            transform: none;
-        }
-
-        .redacao-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #4a5568;
-            margin-bottom: 1rem;
-        }
-
-        .redacao-description {
-            color: #6b7280;
-            margin-bottom: 1.5rem;
-            line-height: 1.6;
-        }
-
-        .redacao-info {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            font-size: 0.9rem;
-        }
-
-        .info-item {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            color: #6b7280;
+            gap: 1rem;
         }
 
-        .info-item strong {
-            color: #4a5568;
+        .header-buttons {
+            display: flex;
+            gap: 1rem;
         }
 
-        .status-badge {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
             font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .status-pendente {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
         }
 
-        .status-concluida {
+        .btn-success {
             background: linear-gradient(135deg, #10b981, #059669);
             color: white;
         }
 
-        .empty-state {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 4rem 2rem;
+        .btn-warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .redacoes-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .redacao-item {
+            background: rgba(102, 126, 234, 0.05);
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .redacao-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: #667eea;
+        }
+
+        .redacao-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .redacao-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .redacao-description {
+            color: #6b7280;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .redacao-info {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
             color: #6b7280;
         }
 
-        .empty-state h3 {
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-            color: #4a5568;
+        .alunos-status {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .aluno-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .aluno-fez {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #059669;
+        }
+
+        .aluno-nao-fez {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #dc2626;
+        }
+
+        .aluno-corrigida {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #16a34a;
         }
 
         /* Modal Styles */
@@ -207,86 +228,26 @@
             background: white;
             margin: 2% auto;
             padding: 0;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 800px;
-            max-height: 90vh;
-            overflow-y: auto;
+            border-radius: 15px;
+            width: 95%;
+            max-width: 1200px;
             animation: slideIn 0.3s ease;
+            max-height: 95vh;
+            overflow-y: auto;
         }
 
         .modal-header {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             padding: 2rem;
-            border-radius: 20px 20px 0 0;
+            border-radius: 15px 15px 0 0;
+            text-align: center;
             position: relative;
-        }
-
-        .modal-header h2 {
-            margin: 0;
-            font-size: 1.8rem;
-        }
-
-        .modal-header .subtitle {
-            margin-top: 0.5rem;
-            opacity: 0.9;
-            font-size: 1rem;
-        }
-
-        .close {
-            position: absolute;
-            right: 2rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: white;
-            font-size: 30px;
-            font-weight: bold;
-            cursor: pointer;
-            opacity: 0.8;
-            transition: opacity 0.3s ease;
-        }
-
-        .close:hover {
-            opacity: 1;
         }
 
         .modal-body {
             padding: 2rem;
         }
-
-        .redacao-detalhes {
-            background: rgba(239, 68, 68, 0.05);
-            border: 2px solid rgba(239, 68, 68, 0.2);
-            border-radius: 15px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .detalhes-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .detalhe-item {
-            text-align: center;
-            padding: 1rem;
-            background: white;
-            border-radius: 10px;
-            border: 1px solid rgba(239, 68, 68, 0.1);
-        }
-
-        .detalhe-label {
-            font-size: 0.9rem;
-            color: #6b7280;
-            margin-bottom: 0.5rem;
-        }
-
-        .detalhe-valor {
-            font-size: 1.2rem;
-            fo
 
         .form-group {
             margin-bottom: 2rem;
@@ -294,41 +255,38 @@
 
         .form-group label {
             display: block;
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.5rem;
             font-weight: 600;
             color: #4a5568;
-            font-size: 1.1rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            font-family: inherit;
         }
 
         .form-group textarea {
-            width: 100%;
-            min-height: 300px;
-            padding: 1.5rem;
-            border: 3px solid #e2e8f0;
-            border-radius: 15px;
-            font-size: 16px;
-            font-family: 'Georgia', serif;
-            line-height: 1.6;
             resize: vertical;
-            transition: all 0.3s ease;
+            min-height: 100px;
         }
 
+        .form-group input:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: #ef4444;
-            box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
-        .contador-caracteres {
-            text-align: right;
-            margin-top: 0.5rem;
-            font-size: 0.9rem;
-            color: #6b7280;
-        }
-
-        .contador-caracteres.erro {
-            color: #ef4444;
-            font-weight: 600;
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
         }
 
         .modal-buttons {
@@ -338,60 +296,195 @@
             margin-top: 2rem;
         }
 
-        .btn {
-            padding: 15px 30px;
+        .btn-modal {
+            padding: 12px 24px;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 1.1rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
         }
 
-        .btn-primary {
+        .btn-confirm {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-cancel {
             background: linear-gradient(135deg, #ef4444, #dc2626);
             color: white;
         }
 
-        .btn-secondary {
+        .close {
+            position: absolute;
+            right: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            opacity: 0.7;
+        }
+
+        .close:hover {
+            opacity: 1;
+        }
+
+        .alunos-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .aluno-card {
+            background: rgba(102, 126, 234, 0.05);
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 10px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .aluno-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .aluno-card.selected {
+            background: rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+        }
+
+        .aluno-card.corrigida {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: #22c55e;
+        }
+
+        .redacao-texto {
             background: #f8fafc;
-            color: #4a5568;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            max-height: 400px;
+            overflow-y: auto;
+            line-height: 1.8;
+            font-family: 'Georgia', serif;
+            font-size: 1rem;
+        }
+
+        .nota-input {
+            width: 120px !important;
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border: 3px solid #667eea !important;
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            text-align: center;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .correcao-container {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .redacao-content {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 2rem;
             border: 2px solid #e2e8f0;
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        .correcao-panel {
+            background: #fff;
+            border-radius: 15px;
+            padding: 2rem;
+            border: 2px solid #667eea;
+            height: fit-content;
         }
 
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
+        .feedback-section {
+            margin-bottom: 1.5rem;
         }
 
-        .loading {
-            display: none;
+        .feedback-section h4 {
+            color: #4a5568;
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        .feedback-section textarea {
+            min-height: 80px;
+        }
+
+        .aluno-info {
             text-align: center;
-            padding: 3rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
         }
 
-        .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #ef4444;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem;
+        .redacao-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-top: 0.3rem;
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-pendente {
+            background: #fbbf24;
+            color: #92400e;
+        }
+
+        .badge-corrigida {
+            background: #34d399;
+            color: #065f46;
         }
 
         @keyframes fadeIn {
@@ -404,7 +497,17 @@
             to { transform: translateY(0); opacity: 1; }
         }
 
-        /* Mobile Styles */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 width: 200px;
@@ -415,20 +518,24 @@
                 padding: 1rem;
             }
             
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
             .header h1 {
                 font-size: 2rem;
             }
             
-            .redacoes-container {
+            .form-row {
                 grid-template-columns: 1fr;
             }
             
-            .modal-content {
-                width: 95%;
-                margin: 5% auto;
+            .alunos-status {
+                grid-template-columns: 1fr;
             }
-            
-            .detalhes-grid {
+
+            .correcao-container {
                 grid-template-columns: 1fr;
             }
         }
@@ -436,358 +543,272 @@
 </head>
 <body>
     <nav class="sidebar">
-        <h2>Portal do Aluno</h2>
+        <h2>Menu</h2>
         <ul>
-            <li><a href="home.html">🏠 Home</a></li>
-            <li><a href="tarefas.html">📋 Tarefas</a></li>
-            <li><a href="redacoes.html" class="active">📝 Redações</a></li>
-            <li><a href="provas.html">📄 Provas</a></li>
-            <li><a href="conquistas.html">🏆 Conquistas</a></li>
-            <li><a href="boletim.html">📊 Boletim</a></li>
-            <li><a href="mensagens.html">✉️ Mensagens</a></li>
+            <li><a href="#" onclick="alert('Navegação para Home')">🏠 Home</a></li>
+            <li><a href="#" onclick="alert('Navegação para Tarefas')">📋 Tarefas</a></li>
+            <li><a href="#" class="active">📝 Redações</a></li>
+            <li><a href="#" onclick="alert('Navegação para Fechamento')">📊 Fechamento</a></li>
+            <li><a href="#" onclick="alert('Navegação para Frequência')">📅 Frequência</a></li>
+            <li><a href="#" onclick="alert('Navegação para Perfil')">👤 Perfil</a></li>
         </ul>
     </nav>
 
     <main class="main-content">
         <div class="header">
             <h1>📝 Redações</h1>
-            <p>Clique em uma redação para fazer ou visualizar sua resposta</p>
+            <div class="header-buttons">
+                <button class="btn btn-primary" id="btn-nova-redacao">
+                    ➕ Nova Redação
+                </button>
+                <button class="btn btn-warning" id="btn-corrigir-redacoes">
+                    📝 Corrigir Redações
+                </button>
+            </div>
         </div>
 
-        <div class="loading" id="loadingRedacoes">
-            <div class="spinner"></div>
-            <p>Carregando redações...</p>
+        <div class="redacoes-container">
+            <div id="redacoes-list">
+                <div class="empty-state" id="empty-state">
+                    <h3>📝 Nenhuma redação cadastrada</h3>
+                    <p>Clique em "Nova Redação" para começar!</p>
+                </div>
+            </div>
         </div>
 
-        <div class="redacoes-container" id="redacoesContainer">
-            <!-- Redações serão carregadas aqui -->
+        <div class="success-message" id="success-message">
+            ✅ Operação realizada com sucesso!
         </div>
     </main>
 
-    <!-- Modal Fazer Redação -->
-    <div id="modalRedacao" class="modal">
+    <!-- Modal Nova Redação -->
+    <div id="modal-nova-redacao" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <span class="close" id="closeModal">&times;</span>
-                <h2 id="redacaoTitulo">Título da Redação</h2>
-                <p class="subtitle" id="redacaoSubtitulo">Descrição da redação</p>
+                <span class="close" id="close-nova-redacao">&times;</span>
+                <h2>📝 Nova Redação</h2>
             </div>
             <div class="modal-body">
-                <div class="redacao-detalhes">
-                    <div class="detalhes-grid">
-                        <div class="detalhe-item">
-                            <div class="detalhe-label">Mín. Caracteres</div>
-                            <div class="detalhe-valor" id="minCaracteres">500</div>
-                        </div>
-                        <div class="detalhe-item">
-                            <div class="detalhe-label">Máx. Caracteres</div>
-                            <div class="detalhe-valor" id="maxCaracteres">2000</div>
-                        </div>
-                        <div class="detalhe-item">
-                            <div class="detalhe-label">Status</div>
-                            <div class="detalhe-valor" id="statusRedacao">Pendente</div>
-                        </div>
-                        <div class="detalhe-item" id="notaContainer" style="display: none;">
-                            <div class="detalhe-label">Nota</div>
-                            <div class="detalhe-valor" id="notaRedacao">-</div>
-                        </div>
-                    </div>
-                </div>
-
-                <form id="formRedacao">
+                <form id="form-nova-redacao">
                     <div class="form-group">
-                        <label for="textoRedacao">Escreva sua redação:</label>
-                        <textarea id="textoRedacao" placeholder="Digite sua redação aqui..." required></textarea>
-                        <div class="contador-caracteres" id="contadorCaracteres">
-                            0 caracteres
+                        <label for="nome-redacao">Nome da redação:</label>
+                        <input type="text" id="nome-redacao" required placeholder="Ex: Redação sobre meio ambiente">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="descricao-redacao">Descrição (o que é para fazer):</label>
+                        <textarea id="descricao-redacao" required placeholder="Adicione aqui uma breve descrição sobre o que é pra fazer na redação!"></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="min-caracteres">Número mínimo de caracteres:</label>
+                            <input type="number" id="min-caracteres" required min="1" placeholder="Ex: 500">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="max-caracteres">Número máximo de caracteres:</label>
+                            <input type="number" id="max-caracteres" required min="1" placeholder="Ex: 2000">
                         </div>
                     </div>
-
+                    
                     <div class="modal-buttons">
-                        <button type="submit" class="btn btn-primary" id="btnEnviar">
-                            📝 Enviar Redação
-                        </button>
-                        <button type="button" class="btn btn-secondary" id="btnCancelar">
-                            ❌ Cancelar
-                        </button>
+                        <button type="submit" class="btn-modal btn-confirm">✅ Salvar</button>
+                        <button type="button" class="btn-modal btn-cancel" id="cancel-nova-redacao">❌ Cancelar</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Firebase SDKs -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.min.js"></script>
+    <!-- Modal Corrigir Redações -->
+    <div id="modal-corrigir-redacoes" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" id="close-corrigir-redacoes">&times;</span>
+                <h2>📝 Corrigir Redações</h2>
+                <p>Selecione uma redação para corrigir</p>
+            </div>
+            <div class="modal-body">
+                <div id="redacoes-para-corrigir" class="alunos-list">
+                    <!-- Redações serão carregadas aqui -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Corrigir Redação Específica -->
+    <div id="modal-corrigir-especifica" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" id="close-corrigir-especifica">&times;</span>
+                <h2 id="titulo-redacao-correcao">Correção de Redação</h2>
+                <p id="subtitulo-redacao-correcao">Selecione um aluno para corrigir</p>
+            </div>
+            <div class="modal-body">
+                <div id="alunos-redacao-container">
+                    <div id="lista-alunos-redacao" class="alunos-list">
+                        <!-- Alunos serão carregados aqui -->
+                    </div>
+                </div>
+
+                <div id="area-correcao" style="display: none;">
+                    <div class="correcao-container">
+                        <div class="redacao-content">
+                            <h3>Redação do Aluno</h3>
+                            <div id="texto-redacao-correcao" class="redacao-texto">
+                                <!-- Texto da redação aparecerá aqui -->
+                            </div>
+                        </div>
+
+                        <div class="correcao-panel">
+                            <div class="aluno-info">
+                                <h4 id="nome-aluno-correcao">Nome do Aluno</h4>
+                            </div>
+
+                            <div class="redacao-stats">
+                                <div class="stat-item">
+                                    <div class="stat-value" id="caracteres-count">0</div>
+                                    <div class="stat-label">Caracteres</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value" id="data-entrega">-</div>
+                                    <div class="stat-label">Data Entrega</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value" id="status-atual">Pendente</div>
+                                    <div class="stat-label">Status</div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="nota-redacao-correcao">Nota (0 a 10):</label>
+                                <input type="number" id="nota-redacao-correcao" class="nota-input" min="0" max="10" step="0.1" placeholder="0.0">
+                            </div>
+
+                            <div class="feedback-section">
+                                <h4>✅ Pontos Positivos (Acertos):</h4>
+                                <textarea id="acertos-redacao" placeholder="Descreva os pontos fortes da redação..."></textarea>
+                            </div>
+
+                            <div class="feedback-section">
+                                <h4>❌ Pontos a Melhorar (Erros):</h4>
+                                <textarea id="erros-redacao" placeholder="Descreva o que precisa ser melhorado..."></textarea>
+                            </div>
+
+                            <div class="feedback-section">
+                                <h4>💬 Comentário Geral:</h4>
+                                <textarea id="comentario-geral" placeholder="Comentário geral sobre a redação..."></textarea>
+                            </div>
+                            
+                            <div class="modal-buttons">
+                                <button type="button" class="btn-modal btn-confirm" id="salvar-correcao">✅ Salvar Correção</button>
+                                <button type="button" class="btn-modal btn-cancel" id="cancel-correcao">❌ Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // Configuração do Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyCL2e1Zi-pzXQZ-02vQf6I8rYjbi5IzaRo",
-            authDomain: "aula-miraculosa.firebaseapp.com",
-            databaseURL: "https://aula-miraculosa-default-rtdb.firebaseio.com",
-            projectId: "aula-miraculosa",
-            storageBucket: "aula-miraculosa.firebasestorage.app",
-            messagingSenderId: "1067250456026",
-            appId: "1:1067250456026:web:632e43e793155444035ce3"
-        };
+        // Dados mockados para funcionar sem Firebase/login
+        let redacoes = {};
+        let alunos = [
+            { id: "joao", nome: "João Silva" },
+            { id: "maria", nome: "Maria Santos" },
+            { id: "pedro", nome: "Pedro Oliveira" },
+            { id: "ana", nome: "Ana Costa" },
+            { id: "carlos", nome: "Carlos Ferreira" },
+            { id: "lucia", nome: "Lucia Almeida" }
+        ];
 
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-
-        // Variáveis globais
-        let alunoLogado = null;
-        let redacaoAtual = null;
-        let redacaoIdAtual = null;
+        // Dados de exemplo com algumas redações pré-populadas
+        function inicializarDadosExemplo() {
+            redacoes = {
+                '1': {
+                    nome: 'Redação sobre Meio Ambiente',
+                    descricao: 'Escreva um texto argumentativo sobre a importância da preservação ambiental',
+                    minCaracteres: 500,
+                    maxCaracteres: 1500,
+                    dataCriacao: '2024-01-15T10:00:00.000Z',
+                    redacoesAlunos: {
+                        'João Silva': {
+                            texto: 'A preservação do meio ambiente é uma das questões mais urgentes do nosso tempo. Vivemos em uma época onde as mudanças climáticas se tornaram uma realidade incontestável, afetando ecossistemas inteiros e ameaçando a vida de milhões de espécies. É fundamental que cada indivíduo compreenda seu papel na proteção do planeta. As ações humanas têm impacto direto no aquecimento global, na poluição dos oceanos e na destruição de florestas. Precisamos adotar práticas sustentáveis em nosso dia a dia, como reciclagem, uso consciente da água e energia, e apoio a empresas ambientalmente responsáveis.',
+                            dataEntrega: '2024-01-20T14:30:00.000Z',
+                            caracteres: 756,
+                            nota: 8.5,
+                            acertos: 'Excelente estrutura argumentativa, uso adequado de conectivos, tema bem desenvolvido.',
+                            erros: 'Alguns erros de concordância verbal, poderia ter mais exemplos práticos.',
+                            comentario: 'Boa redação! Continue praticando a revisão textual.',
+                            corrigida: true,
+                            dataCorrecao: '2024-01-21T09:15:00.000Z'
+                        },
+                        'Maria Santos': {
+                            texto: 'O meio ambiente é muito importante para todos nós. Devemos cuidar da natureza porque ela é essencial para nossa sobrevivência. A poluição está prejudicando nosso planeta e precisamos fazer algo sobre isso. As árvores são importantes porque produzem oxigênio. Os oceanos estão sendo poluídos com plástico. Precisamos reciclar mais e usar menos plástico.',
+                            dataEntrega: '2024-01-19T16:45:00.000Z',
+                            caracteres: 387,
+                            nota: null,
+                            acertos: '',
+                            erros: '',
+                            comentario: '',
+                            corrigida: false
+                        }
+                    }
+                },
+                '2': {
+                    nome: 'O Impacto da Tecnologia na Educação',
+                    descricao: 'Discuta os aspectos positivos e negativos da tecnologia no processo educacional',
+                    minCaracteres: 800,
+                    maxCaracteres: 2000,
+                    dataCriacao: '2024-01-18T09:00:00.000Z',
+                    redacoesAlunos: {
+                        'Pedro Oliveira': {
+                            texto: 'A tecnologia revolucionou completamente o cenário educacional nas últimas décadas. Por um lado, trouxe inúmeras vantagens: acesso facilitado à informação, possibilidade de educação à distância, ferramentas interativas que tornam o aprendizado mais dinâmico e atrativo. Estudantes podem acessar cursos de universidades renomadas mundialmente, assistir videoaulas, participar de fóruns de discussão e utilizar aplicativos educacionais. Por outro lado, existem desafios significativos. A dependência excessiva da tecnologia pode reduzir a capacidade de concentração, criar distração em sala de aula e ampliar a desigualdade social entre estudantes que têm ou não acesso aos recursos tecnológicos.',
+                            dataEntrega: '2024-01-22T11:20:00.000Z',
+                            caracteres: 892,
+                            nota: null,
+                            acertos: '',
+                            erros: '',
+                            comentario: '',
+                            corrigida: false
+                        }
+                    }
+                }
+            };
+        }
 
         // Elementos DOM
-        const loadingRedacoes = document.getElementById('loadingRedacoes');
-        const redacoesContainer = document.getElementById('redacoesContainer');
-        const modalRedacao = document.getElementById('modalRedacao');
-        const textoRedacao = document.getElementById('textoRedacao');
-        const contadorCaracteres = document.getElementById('contadorCaracteres');
+        const modalNovaRedacao = document.getElementById('modal-nova-redacao');
+        const modalCorrigirRedacoes = document.getElementById('modal-corrigir-redacoes');
+        const modalCorrigirEspecifica = document.getElementById('modal-corrigir-especifica');
+        const successMessage = document.getElementById('success-message');
+        const redacoesList = document.getElementById('redacoes-list');
+        const emptyState = document.getElementById('empty-state');
 
-        // Verificar se aluno está logado
-        function verificarLogin() {
-            const dadosAluno = localStorage.getItem('alunoLogado');
-            if (!dadosAluno) {
-                alert('Você precisa fazer login primeiro!');
-                window.location.href = 'index.html';
-                return false;
-            }
-            
-            alunoLogado = JSON.parse(dadosAluno);
-            console.log('Aluno logado:', alunoLogado);
-            return true;
-        }
+        // Variáveis globais
+        let redacaoAtualParaCorrigir = null;
+        let alunoSelecionado = null;
+        let redacaoIdAtual = null;
 
-        // Normalizar nome (remover acentos e espaços extras)
-        function normalizarNome(nome) {
-            return nome.normalize('NFD')
-                       .replace(/[\u0300-\u036f]/g, '')
-                       .replace(/\s+/g, ' ')
-                       .trim()
-                       .toLowerCase();
-        }
-
-        // Carregar redações
-        async function carregarRedacoes() {
-            if (!verificarLogin()) return;
-
-            loadingRedacoes.style.display = 'block';
-            redacoesContainer.innerHTML = '';
-
-            try {
-                const snapshot = await database.ref('redacoes').once('value');
-                const redacoes = snapshot.val();
-
-                loadingRedacoes.style.display = 'none';
-
-                if (!redacoes) {
-                    redacoesContainer.innerHTML = `
-                        <div class="empty-state">
-                            <h3>📝 Nenhuma redação disponível</h3>
-                            <p>As redações aparecerão aqui quando o professor criar.</p>
-                        </div>
-                    `;
-                    return;
-                }
-
-                // Criar cards das redações
-                Object.entries(redacoes).forEach(([id, redacao]) => {
-                    criarCardRedacao(id, redacao);
-                });
-
-            } catch (error) {
-                console.error('Erro ao carregar redações:', error);
-                loadingRedacoes.style.display = 'none';
-                alert('Erro ao carregar redações. Tente novamente.');
-            }
-        }
-
-        // Criar card da redação
-        function criarCardRedacao(id, redacao) {
-            // Verificar se o aluno já fez esta redação
-            const nomeAluno = alunoLogado.nome;
-            const redacoesAlunos = redacao.redacoesAlunos || {};
-            const redacaoAluno = redacoesAlunos[nomeAluno];
-            
-            const jaFez = !!redacaoAluno;
-            const nota = redacaoAluno?.nota;
-
-            const card = document.createElement('div');
-            card.className = `redacao-card ${jaFez ? 'feita' : ''}`;
-            
-            card.innerHTML = `
-                <div class="status-badge ${jaFez ? 'status-concluida' : 'status-pendente'}">
-                    ${jaFez ? '✅ Concluída' : '⏳ Pendente'}
-                </div>
-                
-                <div class="redacao-title">${redacao.nome}</div>
-                <div class="redacao-description">${redacao.descricao}</div>
-                
-                <div class="redacao-info">
-                    <div class="info-item">
-                        <strong>Mín:</strong> ${redacao.minCaracteres} caracteres
-                    </div>
-                    <div class="info-item">
-                        <strong>Máx:</strong> ${redacao.maxCaracteres} caracteres
-                    </div>
-                    <div class="info-item">
-                        <strong>Data:</strong> ${new Date(redacao.dataCriacao).toLocaleDateString('pt-BR')}
-                    </div>
-                    ${nota ? `
-                        <div class="info-item">
-                            <strong>Nota:</strong> ${nota}/10
-                        </div>
-                    ` : ''}
-                </div>
-            `;
-
-            // Adicionar evento de click apenas se não foi feita
-            if (!jaFez) {
-                card.addEventListener('click', () => {
-                    abrirModalRedacao(id, redacao);
-                });
-            }
-
-            redacoesContainer.appendChild(card);
-        }
-
-        // Abrir modal da redação
-        function abrirModalRedacao(id, redacao) {
-            redacaoIdAtual = id;
-            redacaoAtual = redacao;
-
-            // Verificar se já foi feita
-            const nomeAluno = alunoLogado.nome;
-            const redacoesAlunos = redacao.redacoesAlunos || {};
-            const redacaoAluno = redacoesAlunos[nomeAluno];
-
-            document.getElementById('redacaoTitulo').textContent = redacao.nome;
-            document.getElementById('redacaoSubtitulo').textContent = redacao.descricao;
-            document.getElementById('minCaracteres').textContent = redacao.minCaracteres;
-            document.getElementById('maxCaracteres').textContent = redacao.maxCaracteres;
-
-            if (redacaoAluno) {
-                // Redação já foi feita - mostrar em modo visualização
-                document.getElementById('statusRedacao').textContent = 'Concluída';
-                document.getElementById('textoRedacao').value = redacaoAluno.texto || '';
-                document.getElementById('textoRedacao').readOnly = true;
-                document.getElementById('btnEnviar').style.display = 'none';
-                
-                if (redacaoAluno.nota) {
-                    document.getElementById('notaContainer').style.display = 'block';
-                    document.getElementById('notaRedacao').textContent = `${redacaoAluno.nota}/10`;
-                } else {
-                    document.getElementById('notaContainer').style.display = 'none';
-                }
-            } else {
-                // Redação não foi feita - modo normal
-                document.getElementById('statusRedacao').textContent = 'Pendente';
-                document.getElementById('textoRedacao').value = '';
-                document.getElementById('textoRedacao').readOnly = false;
-                document.getElementById('btnEnviar').style.display = 'inline-flex';
-                document.getElementById('notaContainer').style.display = 'none';
-            }
-
-            atualizarContadorCaracteres();
-            modalRedacao.style.display = 'block';
-        }
-
-        // Contador de caracteres
-        textoRedacao.addEventListener('input', atualizarContadorCaracteres);
-
-        function atualizarContadorCaracteres() {
-            const texto = textoRedacao.value;
-            const numCaracteres = texto.length;
-            
-            contadorCaracteres.textContent = `${numCaracteres} caracteres`;
-            
-            if (redacaoAtual) {
-                if (numCaracteres < redacaoAtual.minCaracteres || numCaracteres > redacaoAtual.maxCaracteres) {
-                    contadorCaracteres.classList.add('erro');
-                } else {
-                    contadorCaracteres.classList.remove('erro');
-                }
-            }
-        }
-
-        // Enviar redação
-        document.getElementById('formRedacao').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            if (!redacaoAtual || !redacaoIdAtual) {
-                alert('Erro: redação não identificada!');
-                return;
-            }
-
-            const texto = textoRedacao.value.trim();
-            const numCaracteres = texto.length;
-
-            // Validar número de caracteres
-            if (numCaracteres < redacaoAtual.minCaracteres) {
-                alert(`A redação deve ter pelo menos ${redacaoAtual.minCaracteres} caracteres!`);
-                return;
-            }
-
-            if (numCaracteres > redacaoAtual.maxCaracteres) {
-                alert(`A redação não pode ter mais que ${redacaoAtual.maxCaracteres} caracteres!`);
-                return;
-            }
-
-            if (!texto) {
-                alert('Digite o texto da redação!');
-                return;
-            }
-
-            try {
-                // Salvar redação do aluno no Firebase
-                const nomeAluno = alunoLogado.nome;
-                const redacaoData = {
-                    texto: texto,
-                    dataEntrega: new Date().toISOString(),
-                    caracteres: numCaracteres,
-                    nota: null
-                };
-
-                await database.ref(`redacoes/${redacaoIdAtual}/redacoesAlunos/${nomeAluno}`).set(redacaoData);
-
-                // Fechar modal
-                modalRedacao.style.display = 'none';
-                
-                // Mostrar mensagem de sucesso
-                alert('Redação enviada com sucesso!');
-                
-                // Recarregar redações
-                carregarRedacoes();
-
-            } catch (error) {
-                console.error('Erro ao enviar redação:', error);
-                alert('Erro ao enviar redação. Tente novamente.');
-            }
+        // Event Listeners
+        document.getElementById('btn-nova-redacao').addEventListener('click', () => {
+            modalNovaRedacao.style.display = 'block';
         });
 
-        // Event listeners dos modais
-        document.getElementById('closeModal').addEventListener('click', () => {
-            modalRedacao.style.display = 'none';
+        document.getElementById('btn-corrigir-redacoes').addEventListener('click', () => {
+            modalCorrigirRedacoes.style.display = 'block';
+            carregarRedacoesParaCorrigir();
         });
 
-        document.getElementById('btnCancelar').addEventListener('click', () => {
-            modalRedacao.style.display = 'none';
+        // Fechar modais
+        document.getElementById('close-nova-redacao').addEventListener('click', () => {
+            modalNovaRedacao.style.display = 'none';
         });
 
-        // Fechar modal clicando fora
-        window.addEventListener('click', (e) => {
-            if (e.target === modalRedacao) {
-                modalRedacao.style.display = 'none';
-            }
+        document.getElementById('close-corrigir-redacoes').addEventListener('click', () => {
+            modalCorrigirRedacoes.style.display = 'none';
         });
 
-        // Carregar redações ao iniciar a página
-        window.addEventListener('load', () => {
-            carregarRedacoes();
-        });
-    </script>
-</body>
-</html>
+        document.getElementById('close-corrigir-especifica').addEventListener('click', () =>
