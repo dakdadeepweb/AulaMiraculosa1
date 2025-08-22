@@ -89,11 +89,6 @@
             gap: 1rem;
         }
 
-        .header-buttons {
-            display: flex;
-            gap: 1rem;
-        }
-
         .btn {
             padding: 12px 24px;
             border: none;
@@ -205,12 +200,6 @@
             color: #dc2626;
         }
 
-        .aluno-corrigida {
-            background: rgba(34, 197, 94, 0.1);
-            border: 1px solid rgba(34, 197, 94, 0.3);
-            color: #16a34a;
-        }
-
         /* Modal Styles */
         .modal {
             display: none;
@@ -226,13 +215,13 @@
 
         .modal-content {
             background: white;
-            margin: 2% auto;
+            margin: 5% auto;
             padding: 0;
             border-radius: 15px;
-            width: 95%;
-            max-width: 1200px;
+            width: 90%;
+            max-width: 600px;
             animation: slideIn 0.3s ease;
-            max-height: 95vh;
+            max-height: 90vh;
             overflow-y: auto;
         }
 
@@ -333,7 +322,7 @@
 
         .alunos-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 1rem;
             max-height: 400px;
             overflow-y: auto;
@@ -346,7 +335,6 @@
             padding: 1rem;
             cursor: pointer;
             transition: all 0.3s ease;
-            position: relative;
         }
 
         .aluno-card:hover {
@@ -359,30 +347,22 @@
             border-color: #667eea;
         }
 
-        .aluno-card.corrigida {
-            background: rgba(34, 197, 94, 0.1);
-            border-color: #22c55e;
-        }
-
         .redacao-texto {
             background: #f8fafc;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
             margin: 1rem 0;
-            max-height: 400px;
+            max-height: 300px;
             overflow-y: auto;
-            line-height: 1.8;
-            font-family: 'Georgia', serif;
-            font-size: 1rem;
+            line-height: 1.6;
         }
 
         .nota-input {
-            width: 120px !important;
+            width: 100px !important;
             text-align: center;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: bold;
-            border: 3px solid #667eea !important;
         }
 
         .success-message {
@@ -394,97 +374,6 @@
             text-align: center;
             display: none;
             animation: slideIn 0.3s ease;
-        }
-
-        .correcao-container {
-            display: grid;
-            grid-template-columns: 1fr 400px;
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .redacao-content {
-            background: #f8fafc;
-            border-radius: 15px;
-            padding: 2rem;
-            border: 2px solid #e2e8f0;
-        }
-
-        .correcao-panel {
-            background: #fff;
-            border-radius: 15px;
-            padding: 2rem;
-            border: 2px solid #667eea;
-            height: fit-content;
-        }
-
-        .feedback-section {
-            margin-bottom: 1.5rem;
-        }
-
-        .feedback-section h4 {
-            color: #4a5568;
-            margin-bottom: 0.8rem;
-            font-size: 1.1rem;
-        }
-
-        .feedback-section textarea {
-            min-height: 80px;
-        }
-
-        .aluno-info {
-            text-align: center;
-            margin-bottom: 1.5rem;
-            padding: 1rem;
-            background: rgba(102, 126, 234, 0.1);
-            border-radius: 10px;
-        }
-
-        .redacao-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .stat-item {
-            text-align: center;
-            padding: 1rem;
-            background: #f8fafc;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .stat-value {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #667eea;
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            color: #6b7280;
-            margin-top: 0.3rem;
-        }
-
-        .status-badge {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            padding: 0.3rem 0.6rem;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .badge-pendente {
-            background: #fbbf24;
-            color: #92400e;
-        }
-
-        .badge-corrigida {
-            background: #34d399;
-            color: #065f46;
         }
 
         @keyframes fadeIn {
@@ -534,10 +423,6 @@
             .alunos-status {
                 grid-template-columns: 1fr;
             }
-
-            .correcao-container {
-                grid-template-columns: 1fr;
-            }
         }
     </style>
 </head>
@@ -545,26 +430,21 @@
     <nav class="sidebar">
         <h2>Menu</h2>
         <ul>
-            <li><a href="#" onclick="alert('Navegação para Home')">🏠 Home</a></li>
-            <li><a href="#" onclick="alert('Navegação para Tarefas')">📋 Tarefas</a></li>
-            <li><a href="#" class="active">📝 Redações</a></li>
-            <li><a href="#" onclick="alert('Navegação para Fechamento')">📊 Fechamento</a></li>
-            <li><a href="#" onclick="alert('Navegação para Frequência')">📅 Frequência</a></li>
-            <li><a href="#" onclick="alert('Navegação para Perfil')">👤 Perfil</a></li>
+            <li><a href="Home.html">🏠 Home</a></li>
+            <li><a href="tarefas.html">📋 Tarefas</a></li>
+            <li><a href="redacoes.html" class="active">📝 Redações</a></li>
+            <li><a href="fechamento.html">📊 Fechamento</a></li>
+            <li><a href="frequencia.html">📅 Frequência</a></li>
+            <li><a href="perfil.html">👤 Perfil</a></li>
         </ul>
     </nav>
 
     <main class="main-content">
         <div class="header">
             <h1>📝 Redações</h1>
-            <div class="header-buttons">
-                <button class="btn btn-primary" id="btn-nova-redacao">
-                    ➕ Nova Redação
-                </button>
-                <button class="btn btn-warning" id="btn-corrigir-redacoes">
-                    📝 Corrigir Redações
-                </button>
-            </div>
+            <button class="btn btn-primary" id="btn-nova-redacao">
+                ➕ Nova Redação
+            </button>
         </div>
 
         <div class="redacoes-container">
@@ -621,168 +501,66 @@
         </div>
     </div>
 
-    <!-- Modal Corrigir Redações -->
-    <div id="modal-corrigir-redacoes" class="modal">
+    <!-- Modal Corrigir Redação -->
+    <div id="modal-corrigir" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <span class="close" id="close-corrigir-redacoes">&times;</span>
-                <h2>📝 Corrigir Redações</h2>
-                <p>Selecione uma redação para corrigir</p>
+                <span class="close" id="close-corrigir">&times;</span>
+                <h2>📝 Corrigir Redação</h2>
+                <p id="redacao-title-modal"></p>
             </div>
             <div class="modal-body">
-                <div id="redacoes-para-corrigir" class="alunos-list">
-                    <!-- Redações serão carregadas aqui -->
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Corrigir Redação Específica -->
-    <div id="modal-corrigir-especifica" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span class="close" id="close-corrigir-especifica">&times;</span>
-                <h2 id="titulo-redacao-correcao">Correção de Redação</h2>
-                <p id="subtitulo-redacao-correcao">Selecione um aluno para corrigir</p>
-            </div>
-            <div class="modal-body">
-                <div id="alunos-redacao-container">
-                    <div id="lista-alunos-redacao" class="alunos-list">
+                <div class="form-group">
+                    <label>Selecione um aluno para corrigir:</label>
+                    <div id="alunos-para-corrigir" class="alunos-list">
                         <!-- Alunos serão carregados aqui -->
                     </div>
                 </div>
-
+                
                 <div id="area-correcao" style="display: none;">
-                    <div class="correcao-container">
-                        <div class="redacao-content">
-                            <h3>Redação do Aluno</h3>
-                            <div id="texto-redacao-correcao" class="redacao-texto">
-                                <!-- Texto da redação aparecerá aqui -->
-                            </div>
+                    <div class="form-group">
+                        <label>Redação do aluno:</label>
+                        <div id="texto-redacao" class="redacao-texto">
+                            <!-- Texto da redação aparecerá aqui -->
                         </div>
-
-                        <div class="correcao-panel">
-                            <div class="aluno-info">
-                                <h4 id="nome-aluno-correcao">Nome do Aluno</h4>
-                            </div>
-
-                            <div class="redacao-stats">
-                                <div class="stat-item">
-                                    <div class="stat-value" id="caracteres-count">0</div>
-                                    <div class="stat-label">Caracteres</div>
-                                </div>
-                                <div class="stat-item">
-                                    <div class="stat-value" id="data-entrega">-</div>
-                                    <div class="stat-label">Data Entrega</div>
-                                </div>
-                                <div class="stat-item">
-                                    <div class="stat-value" id="status-atual">Pendente</div>
-                                    <div class="stat-label">Status</div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="nota-redacao-correcao">Nota (0 a 10):</label>
-                                <input type="number" id="nota-redacao-correcao" class="nota-input" min="0" max="10" step="0.1" placeholder="0.0">
-                            </div>
-
-                            <div class="feedback-section">
-                                <h4>✅ Pontos Positivos (Acertos):</h4>
-                                <textarea id="acertos-redacao" placeholder="Descreva os pontos fortes da redação..."></textarea>
-                            </div>
-
-                            <div class="feedback-section">
-                                <h4>❌ Pontos a Melhorar (Erros):</h4>
-                                <textarea id="erros-redacao" placeholder="Descreva o que precisa ser melhorado..."></textarea>
-                            </div>
-
-                            <div class="feedback-section">
-                                <h4>💬 Comentário Geral:</h4>
-                                <textarea id="comentario-geral" placeholder="Comentário geral sobre a redação..."></textarea>
-                            </div>
-                            
-                            <div class="modal-buttons">
-                                <button type="button" class="btn-modal btn-confirm" id="salvar-correcao">✅ Salvar Correção</button>
-                                <button type="button" class="btn-modal btn-cancel" id="cancel-correcao">❌ Cancelar</button>
-                            </div>
-                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="nota-redacao">Nota (0 a 10):</label>
+                        <input type="number" id="nota-redacao" class="nota-input" min="0" max="10" step="0.1" placeholder="0.0">
+                    </div>
+                    
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-modal btn-confirm" id="salvar-nota">✅ Salvar Nota</button>
+                        <button type="button" class="btn-modal btn-cancel" id="cancel-correcao">❌ Cancelar</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        // Dados mockados para funcionar sem Firebase/login
-        let redacoes = {};
-        let alunos = [
-            { id: "joao", nome: "João Silva" },
-            { id: "maria", nome: "Maria Santos" },
-            { id: "pedro", nome: "Pedro Oliveira" },
-            { id: "ana", nome: "Ana Costa" },
-            { id: "carlos", nome: "Carlos Ferreira" },
-            { id: "lucia", nome: "Lucia Almeida" }
-        ];
+    <!-- Firebase SDKs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.min.js"></script>
 
-        // Dados de exemplo com algumas redações pré-populadas
-        function inicializarDadosExemplo() {
-            redacoes = {
-                '1': {
-                    nome: 'Redação sobre Meio Ambiente',
-                    descricao: 'Escreva um texto argumentativo sobre a importância da preservação ambiental',
-                    minCaracteres: 500,
-                    maxCaracteres: 1500,
-                    dataCriacao: '2024-01-15T10:00:00.000Z',
-                    redacoesAlunos: {
-                        'João Silva': {
-                            texto: 'A preservação do meio ambiente é uma das questões mais urgentes do nosso tempo. Vivemos em uma época onde as mudanças climáticas se tornaram uma realidade incontestável, afetando ecossistemas inteiros e ameaçando a vida de milhões de espécies. É fundamental que cada indivíduo compreenda seu papel na proteção do planeta. As ações humanas têm impacto direto no aquecimento global, na poluição dos oceanos e na destruição de florestas. Precisamos adotar práticas sustentáveis em nosso dia a dia, como reciclagem, uso consciente da água e energia, e apoio a empresas ambientalmente responsáveis.',
-                            dataEntrega: '2024-01-20T14:30:00.000Z',
-                            caracteres: 756,
-                            nota: 8.5,
-                            acertos: 'Excelente estrutura argumentativa, uso adequado de conectivos, tema bem desenvolvido.',
-                            erros: 'Alguns erros de concordância verbal, poderia ter mais exemplos práticos.',
-                            comentario: 'Boa redação! Continue praticando a revisão textual.',
-                            corrigida: true,
-                            dataCorrecao: '2024-01-21T09:15:00.000Z'
-                        },
-                        'Maria Santos': {
-                            texto: 'O meio ambiente é muito importante para todos nós. Devemos cuidar da natureza porque ela é essencial para nossa sobrevivência. A poluição está prejudicando nosso planeta e precisamos fazer algo sobre isso. As árvores são importantes porque produzem oxigênio. Os oceanos estão sendo poluídos com plástico. Precisamos reciclar mais e usar menos plástico.',
-                            dataEntrega: '2024-01-19T16:45:00.000Z',
-                            caracteres: 387,
-                            nota: null,
-                            acertos: '',
-                            erros: '',
-                            comentario: '',
-                            corrigida: false
-                        }
-                    }
-                },
-                '2': {
-                    nome: 'O Impacto da Tecnologia na Educação',
-                    descricao: 'Discuta os aspectos positivos e negativos da tecnologia no processo educacional',
-                    minCaracteres: 800,
-                    maxCaracteres: 2000,
-                    dataCriacao: '2024-01-18T09:00:00.000Z',
-                    redacoesAlunos: {
-                        'Pedro Oliveira': {
-                            texto: 'A tecnologia revolucionou completamente o cenário educacional nas últimas décadas. Por um lado, trouxe inúmeras vantagens: acesso facilitado à informação, possibilidade de educação à distância, ferramentas interativas que tornam o aprendizado mais dinâmico e atrativo. Estudantes podem acessar cursos de universidades renomadas mundialmente, assistir videoaulas, participar de fóruns de discussão e utilizar aplicativos educacionais. Por outro lado, existem desafios significativos. A dependência excessiva da tecnologia pode reduzir a capacidade de concentração, criar distração em sala de aula e ampliar a desigualdade social entre estudantes que têm ou não acesso aos recursos tecnológicos.',
-                            dataEntrega: '2024-01-22T11:20:00.000Z',
-                            caracteres: 892,
-                            nota: null,
-                            acertos: '',
-                            erros: '',
-                            comentario: '',
-                            corrigida: false
-                        }
-                    }
-                }
-            };
-        }
+    <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCL2e1Zi-pzXQZ-02vQf6I8rYjbi5IzaRo",
+            authDomain: "aula-miraculosa.firebaseapp.com",
+            databaseURL: "https://aula-miraculosa-default-rtdb.firebaseio.com",
+            projectId: "aula-miraculosa",
+            storageBucket: "aula-miraculosa.firebasestorage.app",
+            messagingSenderId: "1067250456026",
+            appId: "1:1067250456026:web:632e43e793155444035ce3"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
 
         // Elementos DOM
         const modalNovaRedacao = document.getElementById('modal-nova-redacao');
-        const modalCorrigirRedacoes = document.getElementById('modal-corrigir-redacoes');
-        const modalCorrigirEspecifica = document.getElementById('modal-corrigir-especifica');
+        const modalCorrigir = document.getElementById('modal-corrigir');
         const successMessage = document.getElementById('success-message');
         const redacoesList = document.getElementById('redacoes-list');
         const emptyState = document.getElementById('empty-state');
@@ -790,16 +568,39 @@
         // Variáveis globais
         let redacaoAtualParaCorrigir = null;
         let alunoSelecionado = null;
-        let redacaoIdAtual = null;
+        let alunos = []; // Será carregado do Firebase
 
-        // Event Listeners
+        // Carregar alunos do Firebase
+        async function carregarAlunos() {
+            try {
+                const snapshot = await database.ref('alunos').once('value');
+                const alunosData = snapshot.val();
+                
+                if (alunosData) {
+                    // Converter objeto do Firebase em array
+                    alunos = Object.keys(alunosData).map(key => ({
+                        id: key,
+                        nome: alunosData[key].nome || 'Nome não informado',
+                        ...alunosData[key]
+                    }));
+                    console.log('Alunos carregados:', alunos);
+                } else {
+                    console.log('Nenhum aluno encontrado no Firebase');
+                    alunos = [];
+                }
+            } catch (error) {
+                console.error('Erro ao carregar alunos:', error);
+                // Fallback para lista de exemplo em caso de erro
+                alunos = [
+                    { id: 1, nome: "João Silva" },
+                    { id: 2, nome: "Maria Santos" },
+                    { id: 3, nome: "Pedro Oliveira" },
+                    { id: 4, nome: "Ana Costa" }
+                ];
+            }
+        }
         document.getElementById('btn-nova-redacao').addEventListener('click', () => {
             modalNovaRedacao.style.display = 'block';
-        });
-
-        document.getElementById('btn-corrigir-redacoes').addEventListener('click', () => {
-            modalCorrigirRedacoes.style.display = 'block';
-            carregarRedacoesParaCorrigir();
         });
 
         // Fechar modais
@@ -807,8 +608,284 @@
             modalNovaRedacao.style.display = 'none';
         });
 
-        document.getElementById('close-corrigir-redacoes').addEventListener('click', () => {
-            modalCorrigirRedacoes.style.display = 'none';
+        document.getElementById('close-corrigir').addEventListener('click', () => {
+            modalCorrigir.style.display = 'none';
+            resetarCorrecao();
         });
 
-        document.getElementById('close-corrigir-especifica').addEventListener('click', () =>
+        document.getElementById('cancel-nova-redacao').addEventListener('click', () => {
+            modalNovaRedacao.style.display = 'none';
+        });
+
+        document.getElementById('cancel-correcao').addEventListener('click', () => {
+            modalCorrigir.style.display = 'none';
+            resetarCorrecao();
+        });
+
+        // Form Nova Redação
+        document.getElementById('form-nova-redacao').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const nome = document.getElementById('nome-redacao').value;
+            const descricao = document.getElementById('descricao-redacao').value;
+            const minCaracteres = parseInt(document.getElementById('min-caracteres').value);
+            const maxCaracteres = parseInt(document.getElementById('max-caracteres').value);
+            
+            if (minCaracteres >= maxCaracteres) {
+                alert('O número mínimo deve ser menor que o máximo!');
+                return;
+            }
+
+            try {
+                const novaRedacao = {
+                    nome,
+                    descricao,
+                    minCaracteres,
+                    maxCaracteres,
+                    dataCriacao: new Date().toISOString(),
+                    redacoesAlunos: {}
+                };
+
+                // Salvar no Firebase (ou sistema de dados)
+                await database.ref('redacoes').push(novaRedacao);
+                
+                // Fechar modal e resetar form
+                modalNovaRedacao.style.display = 'none';
+                document.getElementById('form-nova-redacao').reset();
+                mostrarSucesso('Redação criada com sucesso!');
+                carregarRedacoes();
+                
+            } catch (error) {
+                console.error('Erro ao criar redação:', error);
+                alert('Erro ao criar redação. Tente novamente.');
+            }
+        });
+
+        // Carregar redações
+        async function carregarRedacoes() {
+            try {
+                const snapshot = await database.ref('redacoes').once('value');
+                const redacoes = snapshot.val();
+                
+                if (!redacoes || Object.keys(redacoes).length === 0) {
+                    emptyState.style.display = 'block';
+                    return;
+                }
+                
+                emptyState.style.display = 'none';
+                redacoesList.innerHTML = '';
+                
+                Object.keys(redacoes).forEach(key => {
+                    const redacao = redacoes[key];
+                    criarCardRedacao(key, redacao);
+                });
+                
+            } catch (error) {
+                console.error('Erro ao carregar redações:', error);
+            }
+        }
+
+        // Criar card de redação
+        function criarCardRedacao(id, redacao) {
+            const redacaoElement = document.createElement('div');
+            redacaoElement.className = 'redacao-item';
+            
+            // Simular algumas redações já feitas pelos alunos (para demonstração)
+            const redacoesAlunos = redacao.redacoesAlunos || gerarRedacoesExemplo();
+            const alunosFizeram = Object.keys(redacoesAlunos).length;
+            const totalAlunos = alunos.length;
+            
+            redacaoElement.innerHTML = `
+                <div class="redacao-header">
+                    <div class="redacao-title">${redacao.nome}</div>
+                    <button class="btn btn-warning" onclick="abrirCorrecao('${id}', '${redacao.nome}')">
+                        📝 Corrigir Redação
+                    </button>
+                </div>
+                <div class="redacao-description">${redacao.descricao}</div>
+                <div class="redacao-info">
+                    <span><strong>Min:</strong> ${redacao.minCaracteres} caracteres</span>
+                    <span><strong>Max:</strong> ${redacao.maxCaracteres} caracteres</span>
+                    <span><strong>Entregues:</strong> ${alunosFizeram}/${totalAlunos}</span>
+                </div>
+                <div class="alunos-status">
+                    ${alunos.map(aluno => {
+                        const fez = redacoesAlunos[aluno.id];
+                        return `
+                            <div class="aluno-status ${fez ? 'aluno-fez' : 'aluno-nao-fez'}">
+                                <span>${aluno.nome}</span>
+                                <span>${fez ? (fez.nota ? `✅ Nota: ${fez.nota}` : '✅ Feita') : '❌ Não feita'}</span>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+            
+            redacoesList.appendChild(redacaoElement);
+        }
+
+        // Gerar redações de exemplo (para demonstração)
+        function gerarRedacoesExemplo() {
+            const exemplos = {};
+            // Simular que alguns alunos fizeram a redação (usando IDs reais dos alunos)
+            if (alunos.length > 0) {
+                const numAlunosQueFlicaram = Math.min(Math.floor(alunos.length * 0.6), alunos.length);
+                const alunosQueFlicaram = alunos.slice(0, numAlunosQueFlicaram);
+                
+                alunosQueFlicaram.forEach(aluno => {
+                    exemplos[aluno.id] = {
+                        texto: `Esta é uma redação de exemplo do aluno ${aluno.nome}. 
+                        O texto contém argumentos bem estruturados sobre o tema proposto, 
+                        demonstrando conhecimento e capacidade de análise crítica. 
+                        A redação segue as normas da língua portuguesa e apresenta 
+                        coesão e coerência textual adequadas ao nível de ensino.`,
+                        dataEntrega: new Date().toISOString(),
+                        nota: null
+                    };
+                });
+            }
+            
+            return exemplos;
+        }
+
+        // Abrir correção
+        function abrirCorrecao(redacaoId, nomeRedacao) {
+            redacaoAtualParaCorrigir = redacaoId;
+            document.getElementById('redacao-title-modal').textContent = nomeRedacao;
+            
+            // Carregar alunos que fizeram a redação
+            carregarAlunosParaCorrigir(redacaoId);
+            
+            modalCorrigir.style.display = 'block';
+        }
+
+        // Carregar alunos para correção
+        async function carregarAlunosParaCorrigir(redacaoId) {
+            try {
+                const snapshot = await database.ref(`redacoes/${redacaoId}/redacoesAlunos`).once('value');
+                const redacoesAlunos = snapshot.val() || {};
+                
+                const alunosContainer = document.getElementById('alunos-para-corrigir');
+                alunosContainer.innerHTML = '';
+                
+                // Mostrar apenas alunos que fizeram a redação
+                const alunosComRedacao = alunos.filter(aluno => redacoesAlunos[aluno.id]);
+                
+                if (alunosComRedacao.length === 0) {
+                    alunosContainer.innerHTML = '<p style="text-align: center; color: #6b7280;">Nenhum aluno fez esta redação ainda.</p>';
+                    return;
+                }
+                
+                alunosComRedacao.forEach(aluno => {
+                    const alunoCard = document.createElement('div');
+                    alunoCard.className = 'aluno-card';
+                    const redacaoAluno = redacoesAlunos[aluno.id];
+                    
+                    alunoCard.innerHTML = `
+                        <strong>${aluno.nome}</strong>
+                        <small>Nota: ${redacaoAluno.nota || 'Não corrigida'}</small>
+                    `;
+                    
+                    alunoCard.addEventListener('click', () => {
+                        // Remover seleção anterior
+                        document.querySelectorAll('.aluno-card').forEach(card => {
+                            card.classList.remove('selected');
+                        });
+                        
+                        // Selecionar atual
+                        alunoCard.classList.add('selected');
+                        alunoSelecionado = aluno;
+                        
+                        // Mostrar redação do aluno
+                        mostrarRedacaoAluno(redacaoAluno);
+                    });
+                    
+                    alunosContainer.appendChild(alunoCard);
+                });
+                
+            } catch (error) {
+                console.error('Erro ao carregar alunos:', error);
+            }
+        }
+
+        // Mostrar redação do aluno
+        function mostrarRedacaoAluno(dadosRedacao) {
+            document.getElementById('area-correcao').style.display = 'block';
+            document.getElementById('texto-redacao').textContent = dadosRedacao.texto || 'Texto não disponível';
+            document.getElementById('nota-redacao').value = dadosRedacao.nota || '';
+        }
+
+        // Salvar nota
+        document.getElementById('salvar-nota').addEventListener('click', async () => {
+            if (!alunoSelecionado || !redacaoAtualParaCorrigir) {
+                alert('Selecione um aluno primeiro!');
+                return;
+            }
+            
+            const nota = parseFloat(document.getElementById('nota-redacao').value);
+            
+            if (isNaN(nota) || nota < 0 || nota > 10) {
+                alert('Digite uma nota válida entre 0 e 10!');
+                return;
+            }
+            
+            try {
+                // Atualizar nota no Firebase
+                await database.ref(`redacoes/${redacaoAtualParaCorrigir}/redacoesAlunos/${alunoSelecionado.id}/nota`).set(nota);
+                
+                modalCorrigir.style.display = 'none';
+                resetarCorrecao();
+                mostrarSucesso('Nota salva com sucesso!');
+                carregarRedacoes();
+                
+            } catch (error) {
+                console.error('Erro ao salvar nota:', error);
+                alert('Erro ao salvar nota. Tente novamente.');
+            }
+        });
+
+        // Resetar correção
+        function resetarCorrecao() {
+            redacaoAtualParaCorrigir = null;
+            alunoSelecionado = null;
+            document.getElementById('area-correcao').style.display = 'none';
+            document.getElementById('nota-redacao').value = '';
+            document.querySelectorAll('.aluno-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+        }
+
+        // Fechar modais clicando fora
+        window.addEventListener('click', (e) => {
+            if (e.target === modalNovaRedacao) {
+                modalNovaRedacao.style.display = 'none';
+            }
+            if (e.target === modalCorrigir) {
+                modalCorrigir.style.display = 'none';
+                resetarCorrecao();
+            }
+        });
+
+        // Mostrar mensagem de sucesso
+        function mostrarSucesso(mensagem = 'Operação realizada com sucesso!') {
+            successMessage.textContent = '✅ ' + mensagem;
+            successMessage.style.display = 'block';
+            
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 3000);
+        }
+
+
+        // Carregar redações ao iniciar
+        document.addEventListener('DOMContentLoaded', async () => {
+            await criarRedacoesExemplo();
+            carregarRedacoes();
+        });
+
+        // Função global para ser chamada pelos botões
+        window.abrirCorrecao = abrirCorrecao;
+    </script>
+</body>
+</html>
+
