@@ -376,6 +376,28 @@
             animation: slideIn 0.3s ease;
         }
 
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -445,6 +467,11 @@
             <button class="btn btn-primary" id="btn-nova-redacao">
                 ➕ Nova Redação
             </button>
+        </div>
+
+        <div class="loading" id="loading-redacoes">
+            <div class="spinner"></div>
+            <p>Carregando redações...</p>
         </div>
 
         <div class="redacoes-container">
@@ -564,11 +591,12 @@
         const successMessage = document.getElementById('success-message');
         const redacoesList = document.getElementById('redacoes-list');
         const emptyState = document.getElementById('empty-state');
+        const loadingRedacoes = document.getElementById('loading-redacoes');
 
         // Variáveis globais
         let redacaoAtualParaCorrigir = null;
         let alunoSelecionado = null;
-        let alunos = []; // Será carregado do Firebase
+        let alunos = [];
 
         // Carregar alunos do Firebase
         async function carregarAlunos() {
@@ -577,7 +605,7 @@
                 const alunosData = snapshot.val();
                 
                 if (alunosData) {
-                    // Converter objeto do Firebase em array
+                    // Converter objeto do Firebase em array, usando nome como chave
                     alunos = Object.keys(alunosData).map(key => ({
                         id: key,
                         nome: alunosData[key].nome || 'Nome não informado',
@@ -590,15 +618,11 @@
                 }
             } catch (error) {
                 console.error('Erro ao carregar alunos:', error);
-                // Fallback para lista de exemplo em caso de erro
-                alunos = [
-                    { id: 1, nome: "João Silva" },
-                    { id: 2, nome: "Maria Santos" },
-                    { id: 3, nome: "Pedro Oliveira" },
-                    { id: 4, nome: "Ana Costa" }
-                ];
+                alunos = [];
             }
         }
+
+        // Event Listeners
         document.getElementById('btn-nova-redacao').addEventListener('click', () => {
             modalNovaRedacao.style.display = 'block';
         });
@@ -646,10 +670,8 @@
                     redacoesAlunos: {}
                 };
 
-                // Salvar no Firebase (ou sistema de dados)
                 await database.ref('redacoes').push(novaRedacao);
                 
-                // Fechar modal e resetar form
                 modalNovaRedacao.style.display = 'none';
                 document.getElementById('form-nova-redacao').reset();
                 mostrarSucesso('Redação criada com sucesso!');
@@ -663,18 +685,22 @@
 
         // Carregar redações
         async function carregarRedacoes() {
+            loadingRedacoes.style.display = 'block';
+            emptyState.style.display = 'none';
+            redacoesList.innerHTML = '';
+
             try {
                 const snapshot = await database.ref('redacoes').once('value');
                 const redacoes = snapshot.val();
+                
+                loadingRedacoes.style.display = 'none';
                 
                 if (!redacoes || Object.keys(redacoes).length === 0) {
                     emptyState.style.display = 'block';
                     return;
                 }
                 
-                emptyState.style.display = 'none';
-                redacoesList.innerHTML = '';
-                
+                // Criar cards das redações
                 Object.keys(redacoes).forEach(key => {
                     const redacao = redacoes[key];
                     criarCardRedacao(key, redacao);
@@ -682,6 +708,8 @@
                 
             } catch (error) {
                 console.error('Erro ao carregar redações:', error);
+                loadingRedacoes.style.display = 'none';
+                emptyState.style.display = 'block';
             }
         }
 
@@ -690,10 +718,17 @@
             const redacaoElement = document.createElement('div');
             redacaoElement.className = 'redacao-item';
             
-            // Simular algumas redações já feitas pelos alunos (para demonstração)
-            const redacoesAlunos = redacao.redacoesAlunos || gerarRedacoesExemplo();
-            const alunosFizeram = Object.keys(redacoesAlunos).length;
+            // Verificar redações dos alunos
+            const redacoesAlunos = redacao.redacoesAlunos || {};
             const totalAlunos = alunos.length;
+            
+            // Contar quantos alunos fizeram a redação (usando nome como chave)
+            let alunosFizeram = 0;
+            alunos.forEach(aluno => {
+                if (redacoesAlunos[aluno.nome]) {
+                    alunosFizeram++;
+                }
+            });
             
             redacaoElement.innerHTML = `
                 <div class="redacao-header">
@@ -707,14 +742,16 @@
                     <span><strong>Min:</strong> ${redacao.minCaracteres} caracteres</span>
                     <span><strong>Max:</strong> ${redacao.maxCaracteres} caracteres</span>
                     <span><strong>Entregues:</strong> ${alunosFizeram}/${totalAlunos}</span>
+                    <span><strong>Data:</strong> ${new Date(redacao.dataCriacao).toLocaleDateString('pt-BR')}</span>
                 </div>
                 <div class="alunos-status">
                     ${alunos.map(aluno => {
-                        const fez = redacoesAlunos[aluno.id];
+                        const redacaoAluno = redacoesAlunos[aluno.nome];
+                        const fez = !!redacaoAluno;
                         return `
                             <div class="aluno-status ${fez ? 'aluno-fez' : 'aluno-nao-fez'}">
                                 <span>${aluno.nome}</span>
-                                <span>${fez ? (fez.nota ? `✅ Nota: ${fez.nota}` : '✅ Feita') : '❌ Não feita'}</span>
+                                <span>${fez ? (redacaoAluno.nota !== null && redacaoAluno.nota !== undefined ? `✅ Nota: ${redacaoAluno.nota}` : '✅ Feita') : '❌ Não feita'}</span>
                             </div>
                         `;
                     }).join('')}
@@ -722,30 +759,6 @@
             `;
             
             redacoesList.appendChild(redacaoElement);
-        }
-
-        // Gerar redações de exemplo (para demonstração)
-        function gerarRedacoesExemplo() {
-            const exemplos = {};
-            // Simular que alguns alunos fizeram a redação (usando IDs reais dos alunos)
-            if (alunos.length > 0) {
-                const numAlunosQueFlicaram = Math.min(Math.floor(alunos.length * 0.6), alunos.length);
-                const alunosQueFlicaram = alunos.slice(0, numAlunosQueFlicaram);
-                
-                alunosQueFlicaram.forEach(aluno => {
-                    exemplos[aluno.id] = {
-                        texto: `Esta é uma redação de exemplo do aluno ${aluno.nome}. 
-                        O texto contém argumentos bem estruturados sobre o tema proposto, 
-                        demonstrando conhecimento e capacidade de análise crítica. 
-                        A redação segue as normas da língua portuguesa e apresenta 
-                        coesão e coerência textual adequadas ao nível de ensino.`,
-                        dataEntrega: new Date().toISOString(),
-                        nota: null
-                    };
-                });
-            }
-            
-            return exemplos;
         }
 
         // Abrir correção
@@ -768,22 +781,27 @@
                 const alunosContainer = document.getElementById('alunos-para-corrigir');
                 alunosContainer.innerHTML = '';
                 
-                // Mostrar apenas alunos que fizeram a redação
-                const alunosComRedacao = alunos.filter(aluno => redacoesAlunos[aluno.id]);
+                // Filtrar alunos que fizeram a redação (usando nome como chave)
+                const alunosComRedacao = alunos.filter(aluno => redacoesAlunos[aluno.nome]);
                 
                 if (alunosComRedacao.length === 0) {
-                    alunosContainer.innerHTML = '<p style="text-align: center; color: #6b7280;">Nenhum aluno fez esta redação ainda.</p>';
+                    alunosContainer.innerHTML = '<p style="text-align: center; color: #6b7280; padding: 2rem;">Nenhum aluno fez esta redação ainda.</p>';
                     return;
                 }
                 
                 alunosComRedacao.forEach(aluno => {
                     const alunoCard = document.createElement('div');
                     alunoCard.className = 'aluno-card';
-                    const redacaoAluno = redacoesAlunos[aluno.id];
+                    const redacaoAluno = redacoesAlunos[aluno.nome];
                     
                     alunoCard.innerHTML = `
                         <strong>${aluno.nome}</strong>
-                        <small>Nota: ${redacaoAluno.nota || 'Não corrigida'}</small>
+                        <small style="display: block; margin-top: 0.5rem;">
+                            Nota: ${redacaoAluno.nota !== null && redacaoAluno.nota !== undefined ? redacaoAluno.nota + '/10' : 'Não corrigida'}
+                        </small>
+                        <small style="display: block; color: #6b7280;">
+                            Entregue: ${new Date(redacaoAluno.dataEntrega).toLocaleDateString('pt-BR')}
+                        </small>
                     `;
                     
                     alunoCard.addEventListener('click', () => {
@@ -805,6 +823,7 @@
                 
             } catch (error) {
                 console.error('Erro ao carregar alunos:', error);
+                document.getElementById('alunos-para-corrigir').innerHTML = '<p style="text-align: center; color: #dc2626; padding: 2rem;">Erro ao carregar alunos. Tente novamente.</p>';
             }
         }
 
@@ -830,8 +849,10 @@
             }
             
             try {
-                // Atualizar nota no Firebase
-                await database.ref(`redacoes/${redacaoAtualParaCorrigir}/redacoesAlunos/${alunoSelecionado.id}/nota`).set(nota);
+                // Atualizar nota no Firebase usando o nome do aluno como chave
+                await database.ref(`redacoes/${redacaoAtualParaCorrigir}/redacoesAlunos/${alunoSelecionado.nome}/nota`).set(nota);
+                await database.ref(`redacoes/${redacaoAtualParaCorrigir}/redacoesAlunos/${alunoSelecionado.nome}/corrigida`).set(true);
+                await database.ref(`redacoes/${redacaoAtualParaCorrigir}/redacoesAlunos/${alunoSelecionado.nome}/dataCorrecao`).set(new Date().toISOString());
                 
                 modalCorrigir.style.display = 'none';
                 resetarCorrecao();
@@ -876,16 +897,21 @@
             }, 3000);
         }
 
-
-        // Carregar redações ao iniciar
-        document.addEventListener('DOMContentLoaded', async () => {
-            await criarRedacoesExemplo();
-            carregarRedacoes();
-        });
-
         // Função global para ser chamada pelos botões
         window.abrirCorrecao = abrirCorrecao;
+
+        // Inicializar aplicação
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('Iniciando aplicação...');
+            
+            // Primeiro carregar os alunos
+            await carregarAlunos();
+            
+            // Depois carregar as redações
+            await carregarRedacoes();
+            
+            console.log('Aplicação carregada!');
+        });
     </script>
 </body>
 </html>
-
